@@ -17,6 +17,9 @@ export default defineEventHandler(async (event) => {
     setCookie(event, STORAGE_KEYS.REFRESH_TOKEN, data.refresh_token, {
       httpOnly: true, secure: true, sameSite: 'lax', path: '/', maxAge: 60 * 60 * 24 * 7,
     })
+    setCookie(event, STORAGE_KEYS.USER, JSON.stringify(data.user), {
+      httpOnly: true, secure: true, sameSite: 'lax', path: '/', maxAge: 60 * 60 * 24 * 7,
+    })
   
     return { ok: true }
   })

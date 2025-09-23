@@ -50,7 +50,8 @@
             <Icon v-if="submitting" name="i-lucide-loader-2" class="mr-2 h-4 w-4 animate-spin" />
             Create
           </button>
-          <NuxtLink to="/enrollments"
+          <NuxtLink
+to="/enrollments"
             class="ml-3 inline-flex items-center rounded-lg border border-gray-300 px-4 py-2 text-gray-700 hover:bg-gray-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-zinc-500/30">
             Cancel
           </NuxtLink>
