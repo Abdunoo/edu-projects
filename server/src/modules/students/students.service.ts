@@ -122,16 +122,21 @@ export class StudentsService {
   }
 
   async update(id: number, dto: UpdateStudentDto) {
-    await this.findOne(id);
     try {
+      const existingStudent = await this.findOne(id);
+      if (!existingStudent)
+        throw new NotFoundException(`Student with ID ${id} not found`);
+      const updateData = {
+        nisn: dto.nisn,
+        name: dto.name,
+        dob: dto.dob ? new Date(dto.dob) : undefined,
+        guardianContact: dto.guardianContact,
+        isActive: dto.isActive,
+        updatedAt: new Date(),
+      };
       const [row] = await this.db
         .update(students)
-        .set({
-          nisn: dto.nisn,
-          name: dto.name,
-          dob: dto.dob ? new Date(dto.dob) : undefined,
-          guardianContact: dto.guardianContact,
-        })
+        .set(updateData)
         .where(eq(students.id, id))
         .returning();
       return {

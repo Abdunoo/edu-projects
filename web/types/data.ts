@@ -90,6 +90,7 @@ export interface ITableColumn<T = Record<string, unknown>> {
   width?: string
   align?: 'left' | 'center' | 'right'
   sortable?: boolean
+  type?: 'text' | 'number' | 'date' | 'datetime' | 'boolean' | 'array'
   formatter?: (value: ColumnValue) => string | number | boolean
 }
 

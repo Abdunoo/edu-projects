@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 import { NodePgDatabase } from 'drizzle-orm/node-postgres';
 import { DATABASE_CONNECTION } from '@/database/database.module';
-import { DbSchema } from '@/database/schema';
+import { classes, DbSchema, students } from '@/database/schema';
 import { enrollments } from '@/database/schema/enrollments';
 import { eq, sql } from 'drizzle-orm';
 import { CreateEnrollmentDto, UpdateEnrollmentDto } from './enrollments.dto';
@@ -43,7 +43,12 @@ export class EnrollmentsService {
 
   async findAll() {
     try {
-      const rows = await this.db.query.enrollments.findMany();
+      const rows = await this.db.query.enrollments.findMany({
+        with: {
+          class: true,
+          student: true,
+        },
+      });
       return {
         statusCode: HttpStatus.OK,
         message: 'Berhasil mengambil daftar enrollment',
@@ -63,13 +68,19 @@ export class EnrollmentsService {
         table: enrollments,
         filters,
         joinOperator,
-        joinTables: {},
+        joinTables: {
+          class: classes,
+          student: students,
+        },
       });
 
       const orderBy = generateOrderBy({
         table: enrollments,
         sort,
-        joinTables: {},
+        joinTables: {
+          class: classes,
+          student: students,
+        },
         defaultSortColumn: enrollments.updatedAt,
         isDesc: true,
       });
@@ -81,12 +92,34 @@ export class EnrollmentsService {
 
       const totalRows = Number(totalCountResult[0]?.count ?? 0);
 
-      const rows = await this.db.query.enrollments.findMany({
-        where: whereCondition,
-        orderBy,
-        limit: perPage,
-        offset,
-      });
+      const rows = await this.db
+        .select({
+          id: enrollments.id,
+          classId: enrollments.classId,
+          studentId: enrollments.studentId,
+          createdAt: enrollments.createdAt,
+          updatedAt: enrollments.updatedAt,
+          class: {
+            id: classes.id,
+            name: classes.name,
+            year: classes.year,
+            createdAt: classes.createdAt,
+            updatedAt: classes.updatedAt,
+          },
+          student: {
+            id: students.id,
+            name: students.name,
+            createdAt: students.createdAt,
+            updatedAt: students.updatedAt,
+          },
+        })
+        .from(enrollments)
+        .leftJoin(classes, eq(enrollments.classId, classes.id))
+        .leftJoin(students, eq(enrollments.studentId, students.id))
+        .where(whereCondition)
+        .limit(perPage)
+        .offset(offset)
+        .orderBy(...orderBy);
 
       return {
         statusCode: HttpStatus.OK,
@@ -109,6 +142,10 @@ export class EnrollmentsService {
   async findOne(id: number) {
     const row = await this.db.query.enrollments.findFirst({
       where: eq(enrollments.id, id),
+      with: {
+        class: true,
+        student: true,
+      },
     });
     if (!row) throw new NotFoundException(`Enrollment with ID ${id} not found`);
     return {

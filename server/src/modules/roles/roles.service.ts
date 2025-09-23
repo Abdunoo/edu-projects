@@ -144,9 +144,14 @@ export class RolesService {
         }
       }
 
+      const updateData = {
+        name: dto.name,
+        updatedAt: new Date(),
+      };
+
       const [updated] = await this.db
         .update(roles)
-        .set({ name: dto.name })
+        .set(updateData)
         .where(eq(roles.id, id))
         .returning();
 

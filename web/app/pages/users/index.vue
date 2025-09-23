@@ -4,6 +4,7 @@ import type { ITableColumn, IListResponse, ListRequestPayload, FilterCondition }
 import { FC } from '~~/utils/filters'
 import type { IUser } from '~~/schemas/user.schema'
 import { ROLES } from '~~/utils/constant'
+import { formatDate } from '~~/utils/functions'
 
 // Composables
 const toast = useCustomToast()
@@ -63,6 +64,11 @@ function clearFilters() {
 
 // Table Columns
 const columns = [
+  {
+    key:'id',
+    label: 'ID',
+    sortable: true
+  },
   { 
     key: 'name', 
     label: 'Name',
@@ -74,15 +80,21 @@ const columns = [
     sortable: true
   },
   { 
-    key: 'role', 
+    key: 'role.name', 
     label: 'Role',
     sortable: true,
-    formatter: (value: IUser['role']) => (value?.name || '-') as string
+  },
+  {
+    key: 'createdAt',
+    label: 'Created',
+    sortable: true,
+    formatter: (value: IUser['createdAt']) => (value ? formatDate(String(value)) : '-') as string
   },
   {
     key: 'updatedAt',
     label: 'Last Updated',
-    sortable: false,
+    sortable: true,
+    formatter: (value: IUser['updatedAt']) => (value ? formatDate(String(value)) : '-') as string
   },
   { 
     key: 'actions', 
@@ -178,7 +190,7 @@ const statStudents = computed(() => (table.rows.value || []).filter(u => u.role?
 
     <!-- Main Content -->
     <BaseTable 
-    :title="'Users'"
+        :title="'Users'"
         :columns="columns as ITableColumn<IUser>[]" 
         :rows="table.rows" 
         :page="table.page" 
@@ -235,7 +247,8 @@ const statStudents = computed(() => (table.rows.value || []).filter(u => u.role?
           </div>
         </template>
         <!-- Custom Role Cell -->
-        <template #cell:role="{ row }">
+        <!-- eslint-disable-next-line vue/valid-v-slot -->
+        <template #cell:role.name="{ row }">
           <span
             class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium"
             :class="(

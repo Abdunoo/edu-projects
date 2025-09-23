@@ -123,12 +123,14 @@ export class ClassesService {
   async update(id: number, dto: UpdateClassDto) {
     await this.findOne(id);
     try {
+      const updateData = {
+        name: dto.name,
+        year: dto.year,
+        updatedAt: new Date(),
+      };
       const [row] = await this.db
         .update(classes)
-        .set({
-          name: dto.name,
-          year: dto.year,
-        })
+        .set(updateData)
         .where(eq(classes.id, id))
         .returning();
       return {

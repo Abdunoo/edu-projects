@@ -3,6 +3,7 @@
 import type { IStudent } from '~~/schemas/student.schema'
 import type { ITableColumn, IListResponse, ListRequestPayload, FilterCondition } from '~~/types/data'
 import { FC } from '~~/utils/filters'
+import { formatDate, formatDateTime } from '../../../utils/functions';
 
 useHead({
   title: 'Students',
@@ -67,34 +68,45 @@ const columns = [
   { 
     key: 'nisn', 
     label: 'NISN',
-    sortable: true
+    sortable: true,
   },
   { 
     key: 'name', 
-    label: 'Name',
+    label: 'NAME',
     sortable: true
   },
   { 
     key: 'dob', 
-    label: 'Day of Birth',
+    label: 'DATE OF BIRTH',
     sortable: true,
-    formatter: (value: IStudent['dob']) => (value ? new Date(value).toLocaleDateString() : '-') as string
+    formatter: (value: IStudent['dob']) => (value ? formatDate(String(value)) : '-') as string
   },
   {
     key: 'guardianContact',
-    label: 'Guardian Contact',
+    label: 'GUARDIAN CONTACT',
     sortable: true,
     formatter: (value: IStudent['guardianContact']) => (value || '-') as string
   },
   {
+    key: 'isActive',
+    label: 'STATUS',
+    sortable: true,
+  },
+  {
+    key: 'createdAt',
+    label: 'CREATED AT',
+    sortable: true,
+    formatter: (value: IStudent['createdAt']) => (value ? formatDateTime(value) : '-') as string
+  },
+  {
     key: 'updatedAt',
-    label: 'Last Updated',
-    sortable: false,
-    formatter: (value: IStudent['updatedAt']) => (value ? new Date(value) : '-') as string
+    label: 'LAST UPDATED',
+    sortable: true,
+    formatter: (value: IStudent['updatedAt']) => (value ? formatDateTime(value) : '-') as string
   },
   { 
     key: 'actions', 
-    label: 'Actions',
+    label: 'ACTIONS',
   }
 ]
 
@@ -207,20 +219,8 @@ const handleExport = async () => {
             </button>
           </div>
         </template>
-        <!-- Custom Role Cell -->
         <template #cell:isActive="{ row }">
-          <span
-            class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium"
-            :class="(row as IStudent)?.isActive
-              ? 'bg-emerald-50 text-emerald-700 ring-1 ring-inset ring-emerald-200'
-              : 'bg-rose-50 text-rose-700 ring-1 ring-inset ring-rose-200'"
-          >
-            {{ (row as IStudent)?.isActive ? 'Active' : 'Inactive' }}
-          </span>
-        </template>
-        <!-- Custom Last Login Cell -->
-        <template #cell:updatedAt="{ row }">
-          <span class="text-gray-700">{{ (row as IStudent)?.updatedAt ?? '-' }}</span>
+          <span :class="[(row as IStudent).isActive ? 'text-green-600 bg-green-100 px-2 py-1 rounded-lg' : 'text-amber-600 bg-amber-100 px-2 py-1 rounded-lg']">{{ (row as IStudent).isActive ? 'Active' : 'Inactive' }}</span>
         </template>
     </BaseTable>
 

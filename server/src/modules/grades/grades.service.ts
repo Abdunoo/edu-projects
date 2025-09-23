@@ -123,14 +123,16 @@ export class GradesService {
   async update(id: number, dto: UpdateGradeDto) {
     await this.findOne(id);
     try {
+      const updateData = {
+        studentId: dto.studentId,
+        subject: dto.subject,
+        term: dto.term,
+        score: dto.score ? String(dto.score) : undefined,
+        updatedAt: new Date(),
+      };
       const [row] = await this.db
         .update(grades)
-        .set({
-          studentId: dto.studentId,
-          subject: dto.subject,
-          term: dto.term,
-          score: dto.score ? String(dto.score) : undefined,
-        })
+        .set(updateData)
         .where(eq(grades.id, id))
         .returning();
       return {

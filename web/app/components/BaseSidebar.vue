@@ -24,7 +24,6 @@ const navTitle = ref('MANAGEMENT')
 const settingsItems = ref<NavItem[]>([
   { label: 'Grades', icon: 'i-lucide-award', to: '/grades' },
   { label: 'Users & Roles', icon: 'i-lucide-users', to: '/users' },
-  { label: 'Settings', icon: 'i-lucide-settings', to: '/settings' },
   { label: 'Help & Support', icon: 'i-lucide-help-circle', to: '/help' },
 ])
 

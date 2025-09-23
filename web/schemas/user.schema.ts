@@ -9,7 +9,9 @@ export const userSchema = z.object({
   id: z.union([z.string(), z.number()]),
   name: z.string().min(1, 'Name is required'),
   email: z.string().email('Invalid email address'),
-  role: roleSchema,
+  roleId: z.union([z.string(), z.number()]),
+  role: roleSchema.optional(),
+  password: z.string().min(8, 'Password must be at least 8 characters long'),
   isActive: z.boolean().default(true),
   createdAt: z.string().datetime().optional(),
   updatedAt: z.string().datetime().optional()

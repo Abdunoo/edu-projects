@@ -3,6 +3,7 @@ import type { ITableColumn, IListResponse, ListRequestPayload, FilterCondition }
 import { FC } from '~~/utils/filters'
 import type { IEnrollment } from '~~/schemas/enrollment.schema'
 import { ENDPOINTS } from '~~/utils/constant'
+import { formatDateTime } from '~~/utils/functions'
 
 useHead({ title: 'Enrollments' })
 
@@ -25,27 +26,56 @@ const table = useDataTable<IEnrollment>({
 })
 
 // Filters
-const studentIdQuery = ref<string>('')
-const classIdQuery = ref<string>('')
+const studentQuery = ref<string>('')
+const classQuery = ref<string>('')
 
-watch([studentIdQuery, classIdQuery], () => {
+watch([studentQuery, classQuery], () => {
   const filters: FilterCondition[] = []
-  if (studentIdQuery.value?.trim()) filters.push(FC.text('studentId', studentIdQuery.value.trim(), 'eq'))
-  if (classIdQuery.value?.trim()) filters.push(FC.text('classId', classIdQuery.value.trim(), 'eq'))
+  if (studentQuery.value?.trim()) filters.push(FC.text('studentId', studentQuery.value.trim(), 'eq'))
+  if (classQuery.value?.trim()) filters.push(FC.text('classId', classQuery.value.trim(), 'eq'))
   table.resetFilters(filters)
 })
 
 function clearFilters() {
-  studentIdQuery.value = ''
-  classIdQuery.value = ''
+  studentQuery.value = ''
+  classQuery.value = ''
 }
 
 // Columns
 const columns = [
-  { key: 'studentId', label: 'Student ID', sortable: true },
-  { key: 'classId', label: 'Class ID', sortable: true },
-  { key: 'updatedAt', label: 'Last Updated', sortable: false },
-  { key: 'actions', label: 'Actions' },
+  { 
+    key: 'id', 
+    label: 'ID', sortable: true},
+  { 
+    key: 'student.name', 
+    label: 'Student', 
+    sortable: true},
+  { 
+    key: 'class.name', 
+    label: 'Class', 
+    sortable: true
+  },
+  { 
+    key: 'class.year', 
+    label: 'Year', 
+    sortable: true
+  },
+  { 
+    key: 'createdAt', 
+    label: 'Created', 
+    sortable: true,
+    formatter: (value: IEnrollment['createdAt']) => (value ? formatDateTime(value) : '-') as string
+  },
+  { 
+    key: 'updatedAt', 
+    label: 'Updated', 
+    sortable: true,
+    formatter: (value: IEnrollment['updatedAt']) => (value ? formatDateTime(value) : '-') as string
+  },
+  { 
+    key: 'actions', 
+    label: 'Actions' 
+  }
 ]
 
 // Events
@@ -84,6 +114,10 @@ const handleDelete = (row: IEnrollment) => {
       :per-page="table.perPage"
       :total-rows="table.totalRows"
       :loading="table.loading"
+      :empty-text="'No enrollments found'"
+      :date-format="'long'"
+      :highlight-on-hover="true"
+      :striped-rows="true"
       @update:page="handlePageChange"
       @update:per-page="handlePerPageChange"
       @sort="handleSort"
@@ -91,15 +125,15 @@ const handleDelete = (row: IEnrollment) => {
       <template #toolbar>
         <div class="flex items-center gap-2">
           <input
-            v-model="studentIdQuery"
+            v-model="studentQuery"
             type="text"
-            placeholder="Student ID"
+            placeholder="Student"
             class="w-40 rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-800 placeholder:text-zinc-400 focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500/30"
           />
           <input
-            v-model="classIdQuery"
+            v-model="classQuery"
             type="text"
-            placeholder="Class ID"
+            placeholder="Class"
             class="w-40 rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-800 placeholder:text-zinc-400 focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500/30"
           />
           <button

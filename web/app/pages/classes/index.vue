@@ -3,6 +3,7 @@ import type { ITableColumn, IListResponse, ListRequestPayload, FilterCondition }
 import { FC } from '~~/utils/filters'
 import type { IClass } from '~~/schemas/class.schema'
 import { ENDPOINTS } from '~~/utils/constant'
+import { formatDate } from '../../../utils/functions';
 
 useHead({ title: 'Classes' })
 
@@ -42,10 +43,38 @@ function clearFilters() {
 
 // Columns
 const columns = [
-  { key: 'name', label: 'Name', sortable: true },
-  { key: 'year', label: 'Year', sortable: true },
-  { key: 'updatedAt', label: 'Last Updated', sortable: false },
-  { key: 'actions', label: 'Actions' },
+  { 
+    key: 'id', 
+    label: 'ID', 
+    sortable: true 
+  },
+  { 
+    key: 'name', 
+    label: 'Name', 
+    sortable: true 
+  },
+  { 
+    key: 'year', 
+    label: 'Year', 
+    sortable: true,
+    formatter: (value: IClass['year']) => (value ? formatDate(String(value)) : '-') as string
+  },
+  { 
+    key: 'createdAt', 
+    label: 'Created', 
+    sortable: false,
+    formatter: (value: IClass['createdAt']) => (value ? formatDate(String(value)) : '-') as string
+  },
+  { 
+    key: 'updatedAt', 
+    label: 'Last Updated', 
+    sortable: false,
+    formatter: (value: IClass['updatedAt']) => (value ? formatDate(String(value)) : '-') as string
+  },
+  { 
+    key: 'actions', 
+    label: 'Actions' 
+  }
 ]
 
 // Events

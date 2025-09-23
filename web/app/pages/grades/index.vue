@@ -3,6 +3,7 @@ import type { ITableColumn, IListResponse, ListRequestPayload, FilterCondition }
 import { FC } from '~~/utils/filters'
 import type { IGrade } from '~~/schemas/grade.schema'
 import { ENDPOINTS } from '~~/utils/constant'
+import { formatDateTime } from '~~/utils/functions'
 
 useHead({ title: 'Grades' })
 
@@ -45,12 +46,41 @@ function clearFilters() {
 
 // Columns
 const columns = [
-  { key: 'studentId', label: 'Student ID', sortable: true },
-  { key: 'subject', label: 'Subject', sortable: true },
-  { key: 'term', label: 'Term', sortable: true },
-  { key: 'score', label: 'Score', sortable: true },
-  { key: 'updatedAt', label: 'Last Updated', sortable: false },
-  { key: 'actions', label: 'Actions' },
+  { 
+    key: 'studentId', 
+    label: 'Student ID', 
+    sortable: true 
+  },
+  { 
+    key: 'subject', 
+    label: 'Subject', 
+    sortable: true 
+  },
+  { 
+    key: 'term', 
+    label: 'Term', 
+    sortable: true 
+  },
+  { 
+    key: 'score', 
+    label: 'Score', sortable: true 
+  },
+  { 
+    key: 'createdAt', 
+    label: 'Created At', 
+    sortable: true,
+    formatter: (value: IGrade['createdAt']) => (value ? formatDateTime(value) : '-') as string
+  },
+  { 
+    key: 'updatedAt', 
+    label: 'Last Updated', 
+    sortable: true,
+    formatter: (value: IGrade['updatedAt']) => (value ? formatDateTime(value) : '-') as string 
+  },
+  { 
+    key: 'actions', 
+    label: 'Actions' 
+  }
 ]
 
 // Events

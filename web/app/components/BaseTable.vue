@@ -2,8 +2,24 @@
 import { computed, ref, unref, withDefaults, type Ref } from 'vue'
 import type { ITableColumn } from '~~/types/data'
 
-// ==== Props & Emits =========================================================
+// Helper: get nested property via "a.b.c"
+function getNestedValue(obj: any, path: string): any {
+  if (!path) return obj
+  const keys = path.split('.')
+  return keys.reduce((o, k) => (o && o[k] !== undefined ? o[k] : undefined), obj)
+}
 
+// Default fallback (no column-level formatter)
+function defaultDisplay(value: any): string {
+  if (value === null || value === undefined || value === '') return '-'
+  if (Array.isArray(value)) return value.join(', ')
+  if (typeof value === 'object') {
+    try { return JSON.stringify(value) } catch { return String(value) }
+  }
+  return String(value)
+}
+
+// ==== Props & Emits =========================================================
 type Props = {
   title?: string
   columns: ITableColumn<T>[]
@@ -16,6 +32,11 @@ type Props = {
   density?: 'comfortable' | 'compact'
   stickyHeader?: boolean
   showIndex?: boolean
+  emptyText?: string
+  /** Optional: consumer may use this inside their own formatter if they import/replicate formatDate */
+  dateFormat?: 'short' | 'long'
+  highlightOnHover?: boolean
+  stripedRows?: boolean
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -28,6 +49,10 @@ const props = withDefaults(defineProps<Props>(), {
   density: 'comfortable',
   stickyHeader: true,
   showIndex: false,
+  emptyText: 'No data available',
+  dateFormat: 'short',
+  highlightOnHover: true,
+  stripedRows: true,
 })
 
 const emit = defineEmits<{
@@ -37,7 +62,6 @@ const emit = defineEmits<{
 }>()
 
 // ==== State & Derived ========================================================
-
 const pageVal = computed(() => Number(unref(props.page) ?? 1))
 const perPageVal = computed(() => Number(unref(props.perPage) ?? 10))
 const totalRowsVal = computed(() => Number(unref(props.totalRows) ?? 0))
@@ -87,12 +111,18 @@ function ariaSortFor(col: ITableColumn<T>) {
   if (sortState.value.key !== String(col.key)) return 'none'
   return sortState.value.dir === 'asc' ? 'ascending' : sortState.value.dir === 'desc' ? 'descending' : 'none'
 }
+
+// Compute a cell value once (supports nested keys)
+function cellValue(row: T, col: ITableColumn<T>): any {
+  const keyStr = String(col.key)
+  return keyStr.includes('.') ? getNestedValue(row, keyStr) : (row as any)[col.key as keyof T]
+}
 </script>
 
 <template>
-  <!-- Shell: softer neutrals + subtle ring + rounded corners; dark-mode ready -->
+  <!-- Shell -->
   <div class="bg-white dark:bg-zinc-950 rounded-2xl ring-1 ring-zinc-200 dark:ring-zinc-800 shadow-sm overflow-hidden">
-    <!-- Toolbar: gradient + subtle backdrop for elegance on scroll -->
+    <!-- Toolbar -->
     <div
       v-if="title || $slots.toolbar || showExport"
       class="flex items-center justify-between gap-3 px-5 py-3 bg-gradient-to-b from-white to-zinc-50 dark:from-zinc-950 dark:to-zinc-900/50 supports-[backdrop-filter]:backdrop-blur-sm"
@@ -114,10 +144,9 @@ function ariaSortFor(col: ITableColumn<T>) {
       </div>
     </div>
 
-    <!-- Table Wrapper -->
+    <!-- Table -->
     <div class="overflow-x-auto" :aria-busy="loadingVal">
       <table class="min-w-full" :aria-label="title || 'Data table'">
-        <!-- Head: sticky with soft separators -->
         <thead :class="['border-y border-zinc-200 dark:border-zinc-800 bg-zinc-50/80 dark:bg-zinc-900/70', stickyHeader ? 'sticky top-0 z-10 supports-[backdrop-filter]:backdrop-blur-md' : '']">
           <tr>
             <th v-if="showIndex" class="px-4 py-3 text-[11px] font-semibold uppercase tracking-wide text-zinc-600 dark:text-zinc-300 text-left w-12">#</th>
@@ -135,8 +164,8 @@ function ariaSortFor(col: ITableColumn<T>) {
                 @click="toggleSort(col)"
               >
                 <span>{{ col.label }}</span>
-                <Icon v-if="sortState.key === col.key && sortState.dir === 'asc'" name="i-lucide-chevron-up" class="h-4 w-4 text-zinc-400 dark:text-zinc-500" />
-                <Icon v-else-if="sortState.key === col.key && sortState.dir === 'desc'" name="i-lucide-chevron-down" class="h-4 w-4 text-zinc-400 dark:text-zinc-500" />
+                <Icon v-if="sortState.key === String(col.key) && sortState.dir === 'asc'" name="i-lucide-chevron-up" class="h-4 w-4 text-zinc-400 dark:text-zinc-500" />
+                <Icon v-else-if="sortState.key === String(col.key) && sortState.dir === 'desc'" name="i-lucide-chevron-down" class="h-4 w-4 text-zinc-400 dark:text-zinc-500" />
                 <Icon v-else name="i-lucide-chevrons-up-down" class="h-4 w-4 text-zinc-400 dark:text-zinc-500" />
               </button>
               <span v-else>{{ col.label }}</span>
@@ -149,7 +178,6 @@ function ariaSortFor(col: ITableColumn<T>) {
           </tr>
         </thead>
 
-        <!-- Body: zebra rows + generous whitespace -->
         <tbody class="divide-y divide-zinc-100 dark:divide-zinc-800">
           <!-- Loading -->
           <tr v-if="loadingVal">
@@ -166,39 +194,65 @@ function ariaSortFor(col: ITableColumn<T>) {
             <td :colspan="(columns.length + (showIndex ? 1 : 0))" class="p-12 text-center">
               <div class="flex flex-col items-center gap-2 text-zinc-500 dark:text-zinc-400">
                 <Icon name="i-lucide-database" class="h-6 w-6 text-zinc-400 dark:text-zinc-500" />
-                <div class="text-sm">No data available</div>
+                <div class="text-sm">{{ emptyText }}</div>
               </div>
             </td>
           </tr>
 
           <!-- Rows -->
-          <tr
-            v-for="(row, idx) in rowsVal"
-            v-else
-            :key="idx"
-            class="odd:bg-zinc-50/60 even:bg-white dark:odd:bg-zinc-900/40 dark:even:bg-zinc-950 hover:bg-zinc-50 dark:hover:bg-zinc-900/60 transition-colors"
-          >
-            <td v-if="showIndex" :class="['px-4', densityRowClass, 'text-sm text-zinc-600 dark:text-zinc-300']">
-              {{ startIdx ? startIdx + idx : idx + 1 }}
-            </td>
-            <td
-              v-for="col in columns"
-              :key="String(col.key)"
-              :class="['px-4', densityRowClass, 'text-sm text-zinc-800 dark:text-zinc-200', alignClass(col.align)]"
+          <template v-else>
+            <tr
+              v-for="(row, idx) in rowsVal"
+              :key="idx"
+              :class="[
+                stripedRows ? 'odd:bg-zinc-50/60 even:bg-white dark:odd:bg-zinc-900/40 dark:even:bg-zinc-950' : 'bg-white dark:bg-zinc-950',
+                highlightOnHover ? 'hover:bg-zinc-50 dark:hover:bg-zinc-900/60' : '',
+                'transition-colors'
+              ]"
             >
-              <slot :name="`cell:${String(col.key)}`" :row="row" :value="row[col.key as keyof T]">
-                {{ col.formatter ? col.formatter(row[col.key as keyof T]) : row[col.key as keyof T] }}
-              </slot>
-            </td>
-          </tr>
+              <td v-if="showIndex" :class="['px-4', densityRowClass, 'text-sm text-zinc-600 dark:text-zinc-300']">
+                {{ startIdx ? startIdx + idx : idx + 1 }}
+              </td>
+
+              <td
+                v-for="col in columns"
+                :key="String(col.key)"
+                :class="['px-4', densityRowClass, 'text-sm text-zinc-800 dark:text-zinc-200', alignClass(col.align)]"
+              >
+                <template v-if="true">
+                  <slot
+                    :name="`cell:${String(col.key)}`"
+                    :row="row"
+                    :col="col"
+                    :index="idx"
+                    :value="cellValue(row, col)"
+                  >
+                    {{
+                      col.formatter
+                        ? col.formatter(cellValue(row, col))
+                        : defaultDisplay(cellValue(row, col))
+                    }}
+                  </slot>
+                </template>
+              </td>
+            </tr>
+          </template>
         </tbody>
       </table>
     </div>
 
-    <!-- Footer / Pagination: compact, balanced spacing -->
+    <!-- Footer / Pagination -->
     <div class="flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:justify-between bg-white/60 dark:bg-zinc-950/60">
       <div class="order-2 text-sm text-zinc-600 dark:text-zinc-300 sm:order-1">
-        <span v-if="totalRowsVal">Showing <span class="font-medium text-zinc-900 dark:text-zinc-100">{{ startIdx || 0 }}</span> to <span class="font-medium text-zinc-900 dark:text-zinc-100">{{ endIdx || 0 }}</span> of <span class="font-medium text-zinc-900 dark:text-zinc-100">{{ totalRowsVal }}</span> results</span>
+        <span v-if="totalRowsVal">
+          Showing
+          <span class="font-medium text-zinc-900 dark:text-zinc-100">{{ startIdx || 0 }}</span>
+          to
+          <span class="font-medium text-zinc-900 dark:text-zinc-100">{{ endIdx || 0 }}</span>
+          of
+          <span class="font-medium text-zinc-900 dark:text-zinc-100">{{ totalRowsVal }}</span>
+          results
+        </span>
         <span v-else>—</span>
       </div>
 
