@@ -48,38 +48,39 @@ function clearFilters() {
 const columns = [
   { 
     key: 'studentId', 
-    label: 'Student ID', 
+    label: 'STUDENT', 
     sortable: true 
   },
   { 
     key: 'subject', 
-    label: 'Subject', 
+    label: 'SUBJECT', 
     sortable: true 
   },
   { 
     key: 'term', 
-    label: 'Term', 
+    label: 'TERM', 
     sortable: true 
   },
   { 
     key: 'score', 
-    label: 'Score', sortable: true 
+    label: 'SCORE', 
+    sortable: true 
   },
   { 
     key: 'createdAt', 
-    label: 'Created At', 
+    label: 'CREATED', 
     sortable: true,
     formatter: (value: IGrade['createdAt']) => (value ? formatDateTime(value) : '-') as string
   },
   { 
     key: 'updatedAt', 
-    label: 'Last Updated', 
+    label: 'LAST UPDATED', 
     sortable: true,
     formatter: (value: IGrade['updatedAt']) => (value ? formatDateTime(value) : '-') as string 
   },
   { 
     key: 'actions', 
-    label: 'Actions' 
+    label: 'ACTIONS' 
   }
 ]
 

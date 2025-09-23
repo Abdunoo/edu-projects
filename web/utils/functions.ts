@@ -23,3 +23,11 @@ export const formatDateTime = (dateString: string | null | undefined): string =>
   }
 }
 
+// format teks jika panjangnya melebihi 10 karakter
+export const formatText = (text: string): string => {
+  if (text.length > 10) {
+    return text.substring(0, 10) + '...'
+  }
+  return text
+}
+

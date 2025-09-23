@@ -15,12 +15,17 @@ import { UpdateStudentDto } from './students.dto';
 import { PaginationDto } from '@/common/types/pagination.dto';
 import { PaginationResponse } from '@/common/types/pagination-response.type';
 import { filterColumns, generateOrderBy } from '@/common/utils/filter-columns';
+import { exportCsvUtil } from '@/common/utils/function.util';
+import { handleServiceErrors } from '@/common/utils/error-handler';
+import { Logger } from 'winston';
 
 @Injectable()
 export class StudentsService {
   constructor(
     @Inject(DATABASE_CONNECTION)
     private readonly db: NodePgDatabase<DbSchema>,
+    @Inject('winston')
+    private readonly logger: Logger,
   ) {}
 
   async create(dto: CreateStudentDto) {
@@ -40,7 +45,12 @@ export class StudentsService {
         data: row,
       };
     } catch (e) {
-      throw new BadRequestException('Failed to create student');
+      handleServiceErrors(
+        e,
+        this.logger,
+        'StudentsService',
+        'Failed to create student',
+      );
     }
   }
 
@@ -53,7 +63,12 @@ export class StudentsService {
         data: rows,
       };
     } catch (e) {
-      throw new BadRequestException('Failed to fetch students');
+      handleServiceErrors(
+        e,
+        this.logger,
+        'StudentsService',
+        'Failed to fetch students',
+      );
     }
   }
 
@@ -105,20 +120,34 @@ export class StudentsService {
         },
       };
     } catch (e) {
-      throw new BadRequestException('Failed to fetch list students');
+      handleServiceErrors(
+        e,
+        this.logger,
+        'StudentsService',
+        'Failed to fetch list students',
+      );
     }
   }
 
   async findOne(id: number) {
-    const row = await this.db.query.students.findFirst({
-      where: eq(students.id, id),
-    });
-    if (!row) throw new NotFoundException(`Student with ID ${id} not found`);
-    return {
-      statusCode: HttpStatus.OK,
-      message: 'Berhasil mengambil siswa',
-      data: row,
-    };
+    try {
+      const row = await this.db.query.students.findFirst({
+        where: eq(students.id, id),
+      });
+      if (!row) throw new NotFoundException(`Student with ID ${id} not found`);
+      return {
+        statusCode: HttpStatus.OK,
+        message: 'Berhasil mengambil siswa',
+        data: row,
+      };
+    } catch (e) {
+      handleServiceErrors(
+        e,
+        this.logger,
+        'StudentsService',
+        'Failed to fetch student',
+      );
+    }
   }
 
   async update(id: number, dto: UpdateStudentDto) {
@@ -145,51 +174,67 @@ export class StudentsService {
         data: row,
       };
     } catch (e) {
-      throw new BadRequestException('Failed to update student');
+      handleServiceErrors(
+        e,
+        this.logger,
+        'StudentsService',
+        'Failed to update student',
+      );
     }
   }
 
   async remove(id: number) {
-    const row = await this.findOne(id);
-    await this.db.delete(students).where(eq(students.id, id));
-    return {
-      statusCode: HttpStatus.OK,
-      message: 'Berhasil menghapus siswa',
-      data: row,
-    };
+    try {
+      const row = await this.findOne(id);
+      await this.db.delete(students).where(eq(students.id, id));
+      return {
+        statusCode: HttpStatus.OK,
+        message: 'Berhasil menghapus siswa',
+        data: row,
+      };
+    } catch (e) {
+      handleServiceErrors(
+        e,
+        this.logger,
+        'StudentsService',
+        'Failed to delete student',
+      );
+    }
   }
 
   async exportCsv(paginationDto: PaginationDto) {
-    const result = await this.list({
-      ...paginationDto,
-      page: 1,
-      perPage: 100000,
-    });
-    const rows = result.data.rows as any[];
-    const headers = [
-      'id',
-      'nisn',
-      'name',
-      'dob',
-      'guardianContact',
-      'createdAt',
-      'updatedAt',
-    ];
-    const escape = (v: any) => {
-      if (v === null || v === undefined) return '';
-      const s = String(v);
-      if (s.includes(',') || s.includes('"') || s.includes('\n')) {
-        return '"' + s.replace(/"/g, '""') + '"';
-      }
-      return s;
-    };
-    const csv = [headers.join(',')]
-      .concat(rows.map((r) => headers.map((h) => escape(r[h])).join(',')))
-      .join('\n');
-    return {
-      statusCode: HttpStatus.OK,
-      message: 'Berhasil mengambil daftar siswa',
-      data: csv,
-    };
+    try {
+      const studentsColumns = [
+        'id',
+        'nisn',
+        'name',
+        'dob',
+        'guardianContact',
+        'createdAt',
+        'updatedAt',
+      ];
+      const headerLabels = [
+        'ID',
+        'NISN',
+        'Nama',
+        'Tanggal Lahir',
+        'Nomor Kontak Wali',
+        'Dibuat Pada',
+        'Diperbarui Pada',
+      ];
+      return exportCsvUtil(
+        this.list.bind(this),
+        paginationDto,
+        studentsColumns,
+        headerLabels,
+      );
+    } catch (e) {
+      handleServiceErrors(
+        e,
+        this.logger,
+        'StudentsService',
+        'Failed to export students',
+      );
+    }
   }
 }

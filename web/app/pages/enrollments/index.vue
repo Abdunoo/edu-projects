@@ -48,33 +48,33 @@ const columns = [
     label: 'ID', sortable: true},
   { 
     key: 'student.name', 
-    label: 'Student', 
+    label: 'STUDENT', 
     sortable: true},
   { 
     key: 'class.name', 
-    label: 'Class', 
+    label: 'CLASS', 
     sortable: true
   },
   { 
     key: 'class.year', 
-    label: 'Year', 
+    label: 'YEAR', 
     sortable: true
   },
   { 
     key: 'createdAt', 
-    label: 'Created', 
+    label: 'CREATED', 
     sortable: true,
     formatter: (value: IEnrollment['createdAt']) => (value ? formatDateTime(value) : '-') as string
   },
   { 
     key: 'updatedAt', 
-    label: 'Updated', 
+    label: 'LAST UPDATED', 
     sortable: true,
     formatter: (value: IEnrollment['updatedAt']) => (value ? formatDateTime(value) : '-') as string
   },
   { 
     key: 'actions', 
-    label: 'Actions' 
+    label: 'ACTIONS' 
   }
 ]
 
@@ -164,9 +164,6 @@ const handleDelete = (row: IEnrollment) => {
             <Icon name="i-lucide-trash" class="h-4 w-4" />
           </button>
         </div>
-      </template>
-      <template #cell:updatedAt="{ row }">
-        <span class="text-gray-700">{{ (row as IEnrollment)?.updatedAt ?? '-' }}</span>
       </template>
     </BaseTable>
   </div>

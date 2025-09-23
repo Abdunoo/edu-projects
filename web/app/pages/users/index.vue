@@ -3,20 +3,12 @@
 import type { ITableColumn, IListResponse, ListRequestPayload, FilterCondition } from '~~/types/data'
 import { FC } from '~~/utils/filters'
 import type { IUser } from '~~/schemas/user.schema'
-import { ROLES } from '~~/utils/constant'
-import { formatDate } from '~~/utils/functions'
+import { ENDPOINTS, ROLES } from '~~/utils/constant'
+import { formatDateTime } from '~~/utils/functions'
 
 // Composables
 const toast = useCustomToast()
 const { $api } = useNuxtApp()
-
-// Constants
-const ENDPOINTS = {
-  USERS: {
-    LIST: '/users/list',
-    EXPORT: '/users/export'
-  }
-}
 
 // DataTable
 const table = useDataTable<IUser>({
@@ -71,34 +63,34 @@ const columns = [
   },
   { 
     key: 'name', 
-    label: 'Name',
+    label: 'NAME',
     sortable: true
   },
   { 
     key: 'email', 
-    label: 'Email',
+    label: 'EMAIL',
     sortable: true
   },
   { 
     key: 'role.name', 
-    label: 'Role',
+    label: 'ROLE',
     sortable: true,
   },
   {
     key: 'createdAt',
-    label: 'Created',
+    label: 'CREATED',
     sortable: true,
-    formatter: (value: IUser['createdAt']) => (value ? formatDate(String(value)) : '-') as string
+    formatter: (value: IUser['createdAt']) => (value ? formatDateTime(String(value)) : '-') as string
   },
   {
     key: 'updatedAt',
-    label: 'Last Updated',
+    label: 'LAST UPDATED',
     sortable: true,
-    formatter: (value: IUser['updatedAt']) => (value ? formatDate(String(value)) : '-') as string
+    formatter: (value: IUser['updatedAt']) => (value ? formatDateTime(String(value)) : '-') as string
   },
   { 
     key: 'actions', 
-    label: 'Actions',
+    label: 'ACTIONS',
   }
 ]
 
@@ -128,8 +120,20 @@ const handleExport = async () => {
   try {
     // Implement export functionality
     console.log('Exporting users...')
-    // Example: window.location.href = `${ENDPOINTS.USERS.EXPORT}?page=${pagination.page}&perPage=${pagination.perPage}`
-    
+
+    const response = await $api(ENDPOINTS.USERS.EXPORT, {
+      method: 'POST',
+      body: {},
+      responseType: 'blob'
+    })
+
+    const url = URL.createObjectURL(response)
+    const link = document.createElement('a')
+    link.href = url
+    link.download = 'users.csv'
+    link.click()
+    URL.revokeObjectURL(url)
+
     toast.success('Export started successfully')
   } catch (error) {
     console.error('Error exporting users:', error)
@@ -261,10 +265,6 @@ const statStudents = computed(() => (table.rows.value || []).filter(u => u.role?
           >
             {{ row?.role?.name || '-' }}
           </span>
-        </template>
-        <!-- Custom Last Login Cell -->
-        <template #cell:updatedAt="{ row }">
-          <span class="text-gray-700">{{ row?.updatedAt ?? '-' }}</span>
         </template>
     </BaseTable>
 

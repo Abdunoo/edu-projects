@@ -3,7 +3,7 @@ import type { ITableColumn, IListResponse, ListRequestPayload, FilterCondition }
 import { FC } from '~~/utils/filters'
 import type { IClass } from '~~/schemas/class.schema'
 import { ENDPOINTS } from '~~/utils/constant'
-import { formatDate } from '../../../utils/functions';
+import { formatDate, formatDateTime } from '../../../utils/functions';
 
 useHead({ title: 'Classes' })
 
@@ -50,30 +50,30 @@ const columns = [
   },
   { 
     key: 'name', 
-    label: 'Name', 
+    label: 'NAME', 
     sortable: true 
   },
   { 
     key: 'year', 
-    label: 'Year', 
+    label: 'YEAR', 
     sortable: true,
     formatter: (value: IClass['year']) => (value ? formatDate(String(value)) : '-') as string
   },
   { 
     key: 'createdAt', 
-    label: 'Created', 
-    sortable: false,
-    formatter: (value: IClass['createdAt']) => (value ? formatDate(String(value)) : '-') as string
+    label: 'CREATED', 
+    sortable: true,
+    formatter: (value: IClass['createdAt']) => (value ? formatDateTime(String(value)) : '-') as string
   },
   { 
     key: 'updatedAt', 
-    label: 'Last Updated', 
-    sortable: false,
-    formatter: (value: IClass['updatedAt']) => (value ? formatDate(String(value)) : '-') as string
+    label: 'LAST UPDATED', 
+    sortable: true,
+    formatter: (value: IClass['updatedAt']) => (value ? formatDateTime(String(value)) : '-') as string
   },
   { 
     key: 'actions', 
-    label: 'Actions' 
+    label: 'ACTIONS' 
   }
 ]
 
@@ -159,9 +159,6 @@ const handleDelete = (row: IClass) => {
             <Icon name="i-lucide-trash" class="h-4 w-4" />
           </button>
         </div>
-      </template>
-      <template #cell:updatedAt="{ row }">
-        <span class="text-gray-700">{{ (row as IClass)?.updatedAt ?? '-' }}</span>
       </template>
     </BaseTable>
   </div>

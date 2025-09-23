@@ -7,13 +7,14 @@ import {
 } from '@nestjs/common';
 import { NodePgDatabase } from 'drizzle-orm/node-postgres';
 import { DATABASE_CONNECTION } from '@/database/database.module';
-import { DbSchema } from '@/database/schema';
+import { DbSchema, students } from '@/database/schema';
 import { grades } from '@/database/schema/grades';
 import { eq, sql } from 'drizzle-orm';
 import { CreateGradeDto, UpdateGradeDto } from './grades.dto';
 import { PaginationDto } from '@/common/types/pagination.dto';
 import { PaginationResponse } from '@/common/types/pagination-response.type';
 import { filterColumns, generateOrderBy } from '@/common/utils/filter-columns';
+import { exportCsvUtil } from '@/common/utils/function.util';
 
 @Injectable()
 export class GradesService {
@@ -65,13 +66,17 @@ export class GradesService {
         table: grades,
         filters,
         joinOperator,
-        joinTables: {},
+        joinTables: {
+          student: students,
+        },
       });
 
       const orderBy = generateOrderBy({
         table: grades,
         sort,
-        joinTables: {},
+        joinTables: {
+          student: students,
+        },
         defaultSortColumn: grades.updatedAt,
         isDesc: true,
       });
@@ -83,12 +88,28 @@ export class GradesService {
 
       const totalRows = Number(totalCountResult[0]?.count ?? 0);
 
-      const rows = await this.db.query.grades.findMany({
-        where: whereCondition,
-        orderBy,
-        limit: perPage,
-        offset,
-      });
+      const rows = await this.db
+        .select({
+          id: grades.id,
+          studentId: grades.studentId,
+          subject: grades.subject,
+          term: grades.term,
+          score: grades.score,
+          createdAt: grades.createdAt,
+          updatedAt: grades.updatedAt,
+          student: {
+            id: students.id,
+            name: students.name,
+            createdAt: students.createdAt,
+            updatedAt: students.updatedAt,
+          },
+        })
+        .from(grades)
+        .leftJoin(students, eq(grades.studentId, students.id))
+        .where(whereCondition)
+        .limit(perPage)
+        .offset(offset)
+        .orderBy(...orderBy);
 
       return {
         statusCode: HttpStatus.OK,
@@ -111,6 +132,9 @@ export class GradesService {
   async findOne(id: number) {
     const row = await this.db.query.grades.findFirst({
       where: eq(grades.id, id),
+      with: {
+        student: true,
+      },
     });
     if (!row) throw new NotFoundException(`Grade with ID ${id} not found`);
     return {
@@ -156,36 +180,24 @@ export class GradesService {
   }
 
   async exportCsv(paginationDto: PaginationDto) {
-    const result = await this.list({
-      ...paginationDto,
-      page: 1,
-      perPage: 100000,
-    });
-    const rows = result.data.rows as any[];
-    const headers = [
+    const columns = [
       'id',
-      'studentId',
+      'student.name',
       'subject',
       'term',
       'score',
       'createdAt',
       'updatedAt',
     ];
-    const escape = (v: any) => {
-      if (v === null || v === undefined) return '';
-      const s = String(v);
-      if (s.includes(',') || s.includes('"') || s.includes('\n')) {
-        return '"' + s.replace(/"/g, '""') + '"';
-      }
-      return s;
-    };
-    const csv = [headers.join(',')]
-      .concat(rows.map((r) => headers.map((h) => escape(r[h])).join(',')))
-      .join('\n');
-    return {
-      statusCode: HttpStatus.OK,
-      message: 'Berhasil mengambil daftar nilai',
-      data: csv,
-    };
+    const headerLabels = [
+      'ID',
+      'Siswa',
+      'Mata Pelajaran',
+      'Semester',
+      'Nilai',
+      'Dibuat Pada',
+      'Diperbarui Pada',
+    ];
+    return exportCsvUtil(this.list, paginationDto, columns, headerLabels);
   }
 }

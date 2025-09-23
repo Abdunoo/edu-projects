@@ -3,7 +3,8 @@
 import type { IStudent } from '~~/schemas/student.schema'
 import type { ITableColumn, IListResponse, ListRequestPayload, FilterCondition } from '~~/types/data'
 import { FC } from '~~/utils/filters'
-import { formatDate, formatDateTime } from '../../../utils/functions';
+import { formatDate, formatDateTime, formatText } from '../../../utils/functions';
+import { ENDPOINTS } from '~~/utils/constant';
 
 useHead({
   title: 'Students',
@@ -11,14 +12,6 @@ useHead({
 // Composables
 const { $api } = useNuxtApp()
 const toast = useCustomToast()
-
-// Constants
-const ENDPOINTS = {
-  STUDENTS: {
-    LIST: '/students/list',
-    EXPORT: '/students/export'
-  }
-}
 
 // DataTable
 const table = useDataTable<IStudent>({
@@ -69,11 +62,13 @@ const columns = [
     key: 'nisn', 
     label: 'NISN',
     sortable: true,
+    formatter: (value: IStudent['nisn']) => (value || '-') as string
   },
   { 
     key: 'name', 
     label: 'NAME',
-    sortable: true
+    sortable: true,
+    formatter: (value: IStudent['name']) => (formatText(value) || '-') as string
   },
   { 
     key: 'dob', 
@@ -94,7 +89,7 @@ const columns = [
   },
   {
     key: 'createdAt',
-    label: 'CREATED AT',
+    label: 'CREATED',
     sortable: true,
     formatter: (value: IStudent['createdAt']) => (value ? formatDateTime(value) : '-') as string
   },
@@ -130,8 +125,18 @@ const handleDelete = (student: IStudent) => {
 
 const handleExport = async () => {
   try {
-    // Implement export functionality
-    // Example: window.location.href = `${ENDPOINTS.STUDENTS.EXPORT}?page=${pagination.page}&perPage=${pagination.perPage}`
+    const response = await $api(ENDPOINTS.STUDENTS.EXPORT, {
+      method: 'POST',
+      body: {},
+      responseType: 'blob'
+    })
+
+    const url = URL.createObjectURL(response)
+    const link = document.createElement('a')
+    link.href = url
+    link.download = 'students.csv'
+    link.click()
+    URL.revokeObjectURL(url)
     
     toast.success('Export started successfully')
   } catch (error) {

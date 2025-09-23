@@ -56,7 +56,7 @@ export class StudentsController {
     return this.studentsService.list(paginationDto);
   }
 
-  @Get('export')
+  @Post('export')
   @RequirePermissions(Permission.STUDENT_READ)
   @HttpCode(HttpStatus.OK)
   async export(@Res() res: Response) {

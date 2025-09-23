@@ -11,6 +11,7 @@ import {
   HttpCode,
   HttpStatus,
   Put,
+  Res,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { JwtAuthGuard } from '@/auth/jwt/jwt.guard';
@@ -22,6 +23,7 @@ import { PaginationDto, paginationSchema } from '@/common/types/pagination.dto';
 import { ZodValidationPipe } from '@/common/pipes/zod-validation.pipe';
 import { createUserSchema, updateUserSchema } from './users.dto';
 import { CsrfGuard } from '@/auth/guards/csrf.guard';
+import { Response } from 'express';
 
 @Controller('users')
 @UseGuards(JwtAuthGuard, PermissionsGuard)
@@ -78,5 +80,18 @@ export class UsersController {
   @HttpCode(HttpStatus.OK)
   async remove(@Param('id', ParseIntPipe) id: number) {
     return this.usersService.remove(id);
+  }
+
+  @Post('export')
+  @RequirePermissions(Permission.USER_READ)
+  @HttpCode(HttpStatus.OK)
+  async export(@Res() res: Response) {
+    const csv = await this.usersService.exportCsv({
+      page: 1,
+      perPage: 100000,
+    });
+    res.setHeader('Content-Type', 'text/csv');
+    res.setHeader('Content-Disposition', 'attachment; filename="users.csv"');
+    return res.send(csv);
   }
 }

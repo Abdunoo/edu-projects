@@ -21,26 +21,32 @@ export const ENDPOINTS = {
   USERS: {
     BASE: '/users',
     LIST: '/users/list',
+    EXPORT: '/users/export',
   },
   ROLES: {
     BASE: '/roles',
     LIST: '/roles/list',
+    EXPORT: '/roles/export',
   },
   STUDENTS: {
     BASE: '/students',
     LIST: '/students/list',
+    EXPORT: '/students/export',
   },
   ENROLLMENTS: {
     BASE: '/enrollments',
     LIST: '/enrollments/list',
+    EXPORT: '/enrollments/export',
   },
   GRADES: {
     BASE: '/grades',
     LIST: '/grades/list',
+    EXPORT: '/grades/export',
   },
   CLASSES: {
     BASE: '/classes',
     LIST: '/classes/list',
+    EXPORT: '/classes/export',
   },
   // Add more endpoints as needed
 }

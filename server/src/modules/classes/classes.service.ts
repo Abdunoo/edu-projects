@@ -14,6 +14,7 @@ import { CreateClassDto, UpdateClassDto } from './classes.dto';
 import { PaginationDto } from '@/common/types/pagination.dto';
 import { PaginationResponse } from '@/common/types/pagination-response.type';
 import { filterColumns, generateOrderBy } from '@/common/utils/filter-columns';
+import { exportCsvUtil } from '@/common/utils/function.util';
 
 @Injectable()
 export class ClassesService {
@@ -154,24 +155,19 @@ export class ClassesService {
   }
 
   async exportCsv(paginationDto: PaginationDto) {
-    const result = await this.findAllList({
-      ...paginationDto,
-      page: 1,
-      perPage: 100000,
-    });
-    const rows = result.data.rows as any[];
-    const headers = ['id', 'name', 'year', 'createdAt', 'updatedAt'];
-    const escape = (v: any) => {
-      if (v === null || v === undefined) return '';
-      const s = String(v);
-      if (s.includes(',') || s.includes('"') || s.includes('\n')) {
-        return '"' + s.replace(/"/g, '""') + '"';
-      }
-      return s;
-    };
-    const csv = [headers.join(',')]
-      .concat(rows.map((r) => headers.map((h) => escape(r[h])).join(',')))
-      .join('\n');
-    return csv;
+    const classColumns = ['id', 'name', 'year', 'createdAt', 'updatedAt'];
+    const headerLabels = [
+      'ID',
+      'Nama',
+      'Tahun',
+      'Dibuat Pada',
+      'Diperbarui Pada',
+    ];
+    return exportCsvUtil(
+      this.findAllList,
+      paginationDto,
+      classColumns,
+      headerLabels,
+    );
   }
 }
