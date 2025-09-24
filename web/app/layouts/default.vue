@@ -1,66 +1,69 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, watch } from 'vue'
+import { ref, onMounted, onUnmounted, watch } from "vue";
 
-const route = useRoute()
-const isMobileMenuOpen = ref(false)
-const isMobile = ref(false)
-const mobileMenuRef = ref<HTMLElement | null>(null)
+const route = useRoute();
+const isMobileMenuOpen = ref(false);
+const isMobile = ref(false);
+const mobileMenuRef = ref<HTMLElement | null>(null);
 
 // Close mobile menu when route changes
 watch(
   () => route.path,
   () => {
-    isMobileMenuOpen.value = false
-  }
-)
+    isMobileMenuOpen.value = false;
+  },
+);
 
 // Close mobile menu when clicking outside the sidebar
 const handleClickOutside = (event: MouseEvent) => {
-  const target = event.target as Node | null
-  if (!isMobileMenuOpen.value) return
-  if (mobileMenuRef.value && target && mobileMenuRef.value.contains(target)) return
-  isMobileMenuOpen.value = false
-}
+  const target = event.target as Node | null;
+  if (!isMobileMenuOpen.value) return;
+  if (mobileMenuRef.value && target && mobileMenuRef.value.contains(target))
+    return;
+  isMobileMenuOpen.value = false;
+};
 
 // Add keyboard navigation for mobile menu
 const handleKeydown = (e: KeyboardEvent) => {
-  if (e.key === 'Escape' && isMobileMenuOpen.value) {
-    isMobileMenuOpen.value = false
+  if (e.key === "Escape" && isMobileMenuOpen.value) {
+    isMobileMenuOpen.value = false;
   }
-}
+};
 
 onMounted(() => {
   // Track viewport width to determine mobile vs desktop (Tailwind lg breakpoint: 1024px)
-  const mq = window.matchMedia('(max-width: 1023px)')
+  const mq = window.matchMedia("(max-width: 1023px)");
   const setFromMQ = () => {
-    isMobile.value = mq.matches
-  }
-  setFromMQ()
-  mq.addEventListener?.('change', setFromMQ)
+    isMobile.value = mq.matches;
+  };
+  setFromMQ();
+  mq.addEventListener?.("change", setFromMQ);
 
-  document.addEventListener('keydown', handleKeydown)
-  document.addEventListener('mousedown', handleClickOutside)
+  document.addEventListener("keydown", handleKeydown);
+  document.addEventListener("mousedown", handleClickOutside);
   // Cleanup media query listener on unmount
   onUnmounted(() => {
-    mq.removeEventListener?.('change', setFromMQ)
-  })
-})
+    mq.removeEventListener?.("change", setFromMQ);
+  });
+});
 
 onUnmounted(() => {
-  document.removeEventListener('keydown', handleKeydown)
-  document.removeEventListener('mousedown', handleClickOutside)
-})
+  document.removeEventListener("keydown", handleKeydown);
+  document.removeEventListener("mousedown", handleClickOutside);
+});
 
 // Toggle mobile menu
 const toggleMobileMenu = () => {
-  isMobileMenuOpen.value = !isMobileMenuOpen.value
-}
+  isMobileMenuOpen.value = !isMobileMenuOpen.value;
+};
 
 // (Dark mode removed)
 </script>
 
 <template>
-  <div class="flex flex-col h-screen overflow-hidden bg-gray-50 transition-colors duration-200">
+  <div
+    class="flex flex-col h-screen overflow-hidden bg-gray-50 transition-colors duration-200"
+  >
     <!-- Header -->
     <BaseHeader :is-mobile="isMobile" @toggle-mobile-menu="toggleMobileMenu" />
 
@@ -86,7 +89,10 @@ const toggleMobileMenu = () => {
           role="dialog"
           aria-modal="true"
         >
-          <div class="fixed inset-0 bg-gray-600 bg-opacity-75" aria-hidden="true" />
+          <div
+            class="fixed inset-0 bg-gray-600 bg-opacity-75"
+            aria-hidden="true"
+          />
         </div>
       </Transition>
 
@@ -118,7 +124,9 @@ const toggleMobileMenu = () => {
       </div>
 
       <!-- Main content -->
-      <main class="flex-1 min-h-0 relative z-0 overflow-y-auto focus:outline-none">
+      <main
+        class="flex-1 min-h-0 relative z-0 overflow-y-auto focus:outline-none"
+      >
         <div class="p-4 sm:p-6">
           <slot />
         </div>

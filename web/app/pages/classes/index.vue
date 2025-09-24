@@ -1,111 +1,132 @@
 <script setup lang="ts">
-import type { ITableColumn, IListResponse, ListRequestPayload, FilterCondition } from '~~/types/data'
-import { FC } from '~~/utils/filters'
-import type { IClass } from '~~/schemas/class.schema'
-import { ENDPOINTS } from '~~/utils/constant'
-import { formatDate, formatDateTime } from '../../../utils/functions';
+import type {
+  ITableColumn,
+  IListResponse,
+  ListRequestPayload,
+  FilterCondition,
+} from "~~/types/data";
+import { FC } from "~~/utils/filters";
+import type { IClass } from "~~/schemas/class.schema";
+import { ENDPOINTS } from "~~/utils/constant";
+import { formatDateTime } from "../../../utils/functions";
 
-useHead({ title: 'Classes' })
+useHead({ title: "Classes" });
 
-const { $api } = useNuxtApp()
-const toast = useCustomToast()
+const { $api } = useNuxtApp();
+const toast = useCustomToast();
 
 const table = useDataTable<IClass>({
   perPage: 10,
   fetcher: async (payload: ListRequestPayload) => {
     const response = await $api<IListResponse<IClass>>(ENDPOINTS.CLASSES.LIST, {
-      method: 'POST',
+      method: "POST",
       body: payload,
-    })
-    const d = (response.data ?? {}) as Partial<IListResponse<IClass>['data']> & { meta?: { totalRows?: number } }
-    const rows: IClass[] = Array.isArray(d?.rows) ? (d.rows as IClass[]) : []
-    const totalRows: number = (d?.totalRows ?? d?.meta?.totalRows ?? 0) as number
-    const pageCount: number = (d?.pageCount as number) ?? Math.max(1, Math.ceil((totalRows || 0) / (payload.perPage || 1)))
-    return { rows, totalRows, pageCount }
+    });
+    const d = (response.data ?? {}) as Partial<
+      IListResponse<IClass>["data"]
+    > & { meta?: { totalRows?: number } };
+    const rows: IClass[] = Array.isArray(d?.rows) ? (d.rows as IClass[]) : [];
+    const totalRows: number = (d?.totalRows ??
+      d?.meta?.totalRows ??
+      0) as number;
+    const pageCount: number =
+      (d?.pageCount as number) ??
+      Math.max(1, Math.ceil((totalRows || 0) / (payload.perPage || 1)));
+    return { rows, totalRows, pageCount };
   },
-})
+});
 
 // Filters
-const nameQuery = ref<string>('')
-const yearQuery = ref<string>('')
+const nameQuery = ref<string>("");
+const yearQuery = ref<string>("");
 
 watch([nameQuery, yearQuery], () => {
-  const filters: FilterCondition[] = []
-  if (nameQuery.value?.trim()) filters.push(FC.text('name', nameQuery.value.trim(), 'iLike'))
-  if (yearQuery.value?.trim()) filters.push(FC.text('year', yearQuery.value.trim(), 'eq'))
-  table.resetFilters(filters)
-})
+  const filters: FilterCondition[] = [];
+  if (nameQuery.value?.trim())
+    filters.push(FC.text("name", nameQuery.value.trim(), "iLike"));
+  if (yearQuery.value?.trim())
+    filters.push(FC.text("year", yearQuery.value.trim(), "eq"));
+  table.resetFilters(filters);
+});
 
 function clearFilters() {
-  nameQuery.value = ''
-  yearQuery.value = ''
+  nameQuery.value = "";
+  yearQuery.value = "";
 }
 
 // Columns
 const columns = [
-  { 
-    key: 'id', 
-    label: 'ID', 
-    sortable: true 
-  },
-  { 
-    key: 'name', 
-    label: 'NAME', 
-    sortable: true 
-  },
-  { 
-    key: 'year', 
-    label: 'YEAR', 
+  {
+    key: "id",
+    label: "ID",
     sortable: true,
-    formatter: (value: IClass['year']) => (value ? formatDate(String(value)) : '-') as string
   },
-  { 
-    key: 'createdAt', 
-    label: 'CREATED', 
+  {
+    key: "name",
+    label: "NAME",
     sortable: true,
-    formatter: (value: IClass['createdAt']) => (value ? formatDateTime(String(value)) : '-') as string
   },
-  { 
-    key: 'updatedAt', 
-    label: 'LAST UPDATED', 
+  {
+    key: "year",
+    label: "YEAR",
     sortable: true,
-    formatter: (value: IClass['updatedAt']) => (value ? formatDateTime(String(value)) : '-') as string
   },
-  { 
-    key: 'actions', 
-    label: 'ACTIONS' 
-  }
-]
+  {
+    key: "createdAt",
+    label: "CREATED",
+    sortable: true,
+    formatter: (value: IClass["createdAt"]) =>
+      (value ? formatDateTime(String(value)) : "-") as string,
+  },
+  {
+    key: "updatedAt",
+    label: "LAST UPDATED",
+    sortable: true,
+    formatter: (value: IClass["updatedAt"]) =>
+      (value ? formatDateTime(String(value)) : "-") as string,
+  },
+  {
+    key: "actions",
+    label: "ACTIONS",
+  },
+];
 
 // Events
-const handlePageChange = (page: number) => table.setPage(page)
-const handlePerPageChange = (perPage: number) => table.setPerPage(perPage)
-const handleSort = (payload: { key: string | null; dir: 'asc' | 'desc' | 'none' | null }) => table.setSortFromSingle(payload)
+const handlePageChange = (page: number) => table.setPage(page);
+const handlePerPageChange = (perPage: number) => table.setPerPage(perPage);
+const handleSort = (payload: {
+  key: string | null;
+  dir: "asc" | "desc" | "none" | null;
+}) => table.setSortFromSingle(payload);
 
 const handleDelete = (row: IClass) => {
-  toast.success(`Class ${row.name} deleted (mock)`) // Implement delete API when available
-}
+  toast.success(`Class ${row.name} deleted (mock)`); // Implement delete API when available
+};
 </script>
 
 <template>
   <div class="page-container">
     <header class="flex items-center justify-between mb-4">
       <div>
-        <h1 class="text-2xl font-semibold text-gray-900 flex items-center gap-2">
+        <h1
+          class="text-2xl font-semibold text-gray-900 flex items-center gap-2"
+        >
           <Icon name="i-lucide-presentation" class="text-primary" />
           Class Management
         </h1>
         <p class="text-gray-600">Manage your classes</p>
       </div>
       <NuxtLink to="/classes/create">
-        <span class="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/50">
+        <span
+          class="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/50"
+        >
           <Icon name="i-lucide-plus" class="h-4 w-4" />
           Add Class
         </span>
       </NuxtLink>
     </header>
 
-    <BaseTable 
+    <BaseTable
       :title="'Classes'"
       :columns="columns as ITableColumn<IClass>[]"
       :rows="table.rows"

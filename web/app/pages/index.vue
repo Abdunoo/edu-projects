@@ -4,7 +4,11 @@
 
     <!-- Stats Cards -->
     <div class="grid grid-cols-1 gap-5 mt-6 sm:grid-cols-2 lg:grid-cols-4">
-      <div v-for="stat in stats" :key="stat.id" class="bg-white overflow-hidden shadow rounded-lg">
+      <div
+        v-for="stat in stats"
+        :key="stat.id"
+        class="bg-white overflow-hidden shadow rounded-lg"
+      >
         <div class="p-5">
           <div class="flex items-center">
             <div :class="[stat.iconBackground, 'flex-shrink-0 p-3 rounded-md']">
@@ -34,7 +38,9 @@
         <ul role="list" class="divide-y divide-gray-200">
           <li v-for="activity in activities" :key="activity.id">
             <div class="px-4 py-4 flex items-center sm:px-6">
-              <div class="min-w-0 flex-1 sm:flex sm:items-center sm:justify-between">
+              <div
+                class="min-w-0 flex-1 sm:flex sm:items-center sm:justify-between"
+              >
                 <div class="truncate">
                   <div class="flex text-sm">
                     <p class="font-medium text-secondary truncate">
@@ -58,7 +64,10 @@
                 </div>
               </div>
               <div class="ml-5 flex-shrink-0">
-                <Icon name="heroicons:chevron-right" class="h-5 w-5 text-gray-400" />
+                <Icon
+                  name="heroicons:chevron-right"
+                  class="h-5 w-5 text-gray-400"
+                />
               </div>
             </div>
           </li>
@@ -72,52 +81,52 @@
 const stats = [
   {
     id: 1,
-    name: 'Total Subscribers',
-    value: '8,249',
-    icon: 'heroicons:users',
-    iconBackground: 'bg-indigo-500',
+    name: "Total Subscribers",
+    value: "8,249",
+    icon: "heroicons:users",
+    iconBackground: "bg-indigo-500",
   },
   {
     id: 2,
-    name: 'Avg. Open Rate',
-    value: '58.16%',
-    icon: 'heroicons:envelope-open',
-    iconBackground: 'bg-green-500',
+    name: "Avg. Open Rate",
+    value: "58.16%",
+    icon: "heroicons:envelope-open",
+    iconBackground: "bg-green-500",
   },
   {
     id: 3,
-    name: 'Avg. Click Rate',
-    value: '24.57%',
-    icon: 'heroicons:cursor-click',
-    iconBackground: 'bg-yellow-500',
+    name: "Avg. Click Rate",
+    value: "24.57%",
+    icon: "heroicons:cursor-click",
+    iconBackground: "bg-yellow-500",
   },
   {
     id: 4,
-    name: 'Active Users',
-    value: '1,234',
-    icon: 'heroicons:user-group',
-    iconBackground: 'bg-blue-500',
+    name: "Active Users",
+    value: "1,234",
+    icon: "heroicons:user-group",
+    iconBackground: "bg-blue-500",
   },
-]
+];
 
 const activities = [
   {
     id: 1,
-    title: 'New user registered',
-    description: 'John Doe',
-    date: '1h ago',
+    title: "New user registered",
+    description: "John Doe",
+    date: "1h ago",
   },
   {
     id: 2,
-    title: 'New project created',
-    description: 'Marketing Campaign',
-    date: '2h ago',
+    title: "New project created",
+    description: "Marketing Campaign",
+    date: "2h ago",
   },
   {
     id: 3,
-    title: 'New message',
-    description: 'from Sarah',
-    date: '3h ago',
+    title: "New message",
+    description: "from Sarah",
+    date: "3h ago",
   },
-]
+];
 </script>

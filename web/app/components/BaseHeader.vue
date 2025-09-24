@@ -1,9 +1,9 @@
 <script setup lang="ts">
-defineEmits(['toggle-mobile-menu'])
-const auth = useAuthStore()
+defineEmits(["toggle-mobile-menu"]);
+const auth = useAuthStore();
 
 function handleLogout() {
-  auth.logout()
+  auth.logout();
 }
 </script>
 
@@ -24,9 +24,13 @@ function handleLogout() {
     </div>
 
     <!-- Logo (desktop) -->
-    <div class="hidden lg:flex h-16 items-center justify-between border-b border-gray-200">
+    <div
+      class="hidden lg:flex h-16 items-center justify-between border-b border-gray-200"
+    >
       <div class="flex items-center space-x-2">
-        <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-primary-600">
+        <div
+          class="flex h-8 w-8 items-center justify-center rounded-lg bg-primary-600"
+        >
           <Icon name="i-lucide-graduation-cap" class="h-5 w-5 text-white" />
         </div>
         <span class="text-xl font-bold text-gray-900">EduManagePro</span>
@@ -34,7 +38,9 @@ function handleLogout() {
     </div>
 
     <!-- Page title (mobile) -->
-    <div class="flex flex-1 items-center justify-center px-2 lg:ml-6 lg:justify-start lg:hidden">
+    <div
+      class="flex flex-1 items-center justify-center px-2 lg:ml-6 lg:justify-start lg:hidden"
+    >
       <h1 class="text-lg font-semibold text-gray-900">
         <slot name="title">Dashboard</slot>
       </h1>
@@ -45,7 +51,9 @@ function handleLogout() {
       <!-- Search (desktop) -->
       <div class="hidden lg:block">
         <div class="relative">
-          <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+          <div
+            class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3"
+          >
             <Icon name="i-lucide-search" class="h-4 w-4 text-gray-400" />
           </div>
           <input
@@ -61,7 +69,9 @@ function handleLogout() {
       <!-- User Profile -->
       <div class="border-t border-gray-200 p-4">
         <div class="group relative">
-          <button class="flex w-full items-center rounded-lg p-1 hover:bg-gray-100">
+          <button
+            class="flex w-full items-center rounded-lg p-1 hover:bg-gray-100"
+          >
             <img
               class="h-9 w-9 flex-shrink-0 rounded-full object-cover"
               src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
@@ -80,11 +90,21 @@ function handleLogout() {
           <div
             class="invisible absolute left-0 mb-2 w-40 origin-bottom-left rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none group-hover:visible"
           >
-            <NuxtLink href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+            <NuxtLink
+              href="#"
+              class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
               >Your Profile</NuxtLink
             >
-            <NuxtLink href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Settings</NuxtLink>
-            <span class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" @click="handleLogout">Sign out</span>
+            <NuxtLink
+              href="#"
+              class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+              >Settings</NuxtLink
+            >
+            <span
+              class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+              @click="handleLogout"
+              >Sign out</span
+            >
           </div>
         </div>
       </div>

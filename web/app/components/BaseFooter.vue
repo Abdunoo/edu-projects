@@ -1,20 +1,22 @@
 <script setup lang="ts">
-const currentYear = new Date().getFullYear()
+const currentYear = new Date().getFullYear();
 
 const navigation = {
   social: [
-    { name: 'Facebook', href: '#', icon: 'i-lucide-facebook' },
-    { name: 'Twitter', href: '#', icon: 'i-lucide-twitter' },
-    { name: 'Instagram', href: '#', icon: 'i-lucide-instagram' },
-    { name: 'LinkedIn', href: '#', icon: 'i-lucide-linkedin' },
-    { name: 'GitHub', href: '#', icon: 'i-lucide-github' },
+    { name: "Facebook", href: "#", icon: "i-lucide-facebook" },
+    { name: "Twitter", href: "#", icon: "i-lucide-twitter" },
+    { name: "Instagram", href: "#", icon: "i-lucide-instagram" },
+    { name: "LinkedIn", href: "#", icon: "i-lucide-linkedin" },
+    { name: "GitHub", href: "#", icon: "i-lucide-github" },
   ],
-}
+};
 </script>
 
 <template>
   <footer class="bg-white border-t border-gray-200">
-    <div class="mx-auto max-w-7xl px-6 py-12 md:flex md:items-center md:justify-between lg:px-8">
+    <div
+      class="mx-auto max-w-7xl px-6 py-12 md:flex md:items-center md:justify-between lg:px-8"
+    >
       <div class="flex justify-center space-x-6 md:order-2">
         <a
           v-for="item in navigation.social"
@@ -38,7 +40,8 @@ const navigation = {
 <style scoped>
 /* Smooth hover transitions */
 a {
-  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+  transition-property:
+    color, background-color, border-color, text-decoration-color, fill, stroke;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 200ms;
 }

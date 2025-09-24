@@ -1,20 +1,20 @@
-import { z } from 'zod';
+import { z } from "zod";
 
 export const roleSchema = z.object({
   id: z.union([z.string(), z.number()]),
-  name: z.string()
+  name: z.string(),
 });
 
 export const userSchema = z.object({
   id: z.union([z.string(), z.number()]),
-  name: z.string().min(1, 'Name is required'),
-  email: z.string().email('Invalid email address'),
+  name: z.string().min(1, "Name is required"),
+  email: z.string().email("Invalid email address"),
   roleId: z.union([z.string(), z.number()]),
   role: roleSchema.optional(),
-  password: z.string().min(8, 'Password must be at least 8 characters long'),
+  password: z.string().min(8, "Password must be at least 8 characters long"),
   isActive: z.boolean().default(true),
   createdAt: z.string().datetime().optional(),
-  updatedAt: z.string().datetime().optional()
+  updatedAt: z.string().datetime().optional(),
 });
 
 // export const userListResponseSchema = z.object({

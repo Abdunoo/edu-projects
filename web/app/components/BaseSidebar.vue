@@ -1,42 +1,42 @@
 <script setup lang="ts">
-const route = useRoute()
+const route = useRoute();
 
 interface NavItem {
-  label: string
-  icon: string
-  to: string
-  badge?: string | number
+  label: string;
+  icon: string;
+  to: string;
+  badge?: string | number;
 }
 
 // Main navigation items
 const navItems = ref<NavItem[]>([
-  { label: 'Dashboard', icon: 'i-lucide-layout-dashboard', to: '/' },
-  { label: 'Students', icon: 'i-lucide-users', to: '/students' },
+  { label: "Dashboard", icon: "i-lucide-layout-dashboard", to: "/" },
+  { label: "Students", icon: "i-lucide-users", to: "/students" },
   // { label: 'Teachers', icon: 'i-lucide-graduation-cap', to: '/teachers' },
-  { label: 'Classes', icon: 'i-lucide-presentation', to: '/classes' },
-  { label: 'Enrollments', icon: 'i-lucide-book-open', to: '/enrollments' },
+  { label: "Classes", icon: "i-lucide-presentation", to: "/classes" },
+  { label: "Enrollments", icon: "i-lucide-book-open", to: "/enrollments" },
   // { label: 'Attendance', icon: 'i-lucide-clipboard-check', to: '/attendance' },
-])
+]);
 
-const navTitle = ref('MANAGEMENT')
+const navTitle = ref("MANAGEMENT");
 
 // Settings navigation items
 const settingsItems = ref<NavItem[]>([
-  { label: 'Grades', icon: 'i-lucide-award', to: '/grades' },
-  { label: 'Users & Roles', icon: 'i-lucide-users', to: '/users' },
-  { label: 'Help & Support', icon: 'i-lucide-help-circle', to: '/help' },
-])
+  { label: "Grades", icon: "i-lucide-award", to: "/grades" },
+  { label: "Users & Roles", icon: "i-lucide-users", to: "/users" },
+  { label: "Help & Support", icon: "i-lucide-help-circle", to: "/help" },
+]);
 
 // Check if a nav item is active
 const isActive = (path: string) => {
-  return route.path === path
-}
+  return route.path === path;
+};
 
 // Emits and props (used by layout to close mobile drawer on navigate)
 const emit = defineEmits<{
-  (e: 'navigate'): void
-}>()
-const props = defineProps<{ isMobile?: boolean }>()
+  (e: "navigate"): void;
+}>();
+const props = defineProps<{ isMobile?: boolean }>();
 </script>
 
 <template>
@@ -47,7 +47,9 @@ const props = defineProps<{ isMobile?: boolean }>()
       class="flex h-16 items-center justify-between border-b border-gray-200 px-6"
     >
       <div class="flex items-center space-x-2">
-        <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-primary-600">
+        <div
+          class="flex h-8 w-8 items-center justify-center rounded-lg bg-primary-600"
+        >
           <Icon name="i-lucide-graduation-cap" class="h-5 w-5 text-white" />
         </div>
         <span class="text-xl font-bold text-gray-900">EduManagePro</span>
@@ -95,7 +97,10 @@ const props = defineProps<{ isMobile?: boolean }>()
             class="flex items-center rounded-lg px-3 py-2.5 text-sm font-medium text-gray-700 transition-colors duration-200 hover:bg-gray-100"
             @click="props.isMobile && emit('navigate')"
           >
-            <Icon :name="item.icon" class="mr-3 h-5 w-5 flex-shrink-0 text-gray-500" />
+            <Icon
+              :name="item.icon"
+              class="mr-3 h-5 w-5 flex-shrink-0 text-gray-500"
+            />
             <span>{{ item.label }}</span>
           </NuxtLink>
         </div>

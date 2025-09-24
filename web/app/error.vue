@@ -1,23 +1,25 @@
 <script setup lang="ts">
-import type { NuxtError } from '#app'
+import type { NuxtError } from "#app";
 
 const props = defineProps({
   error: Object as () => NuxtError,
-})
+});
 
 const errorMessage = computed(() => {
-  if (props.error?.statusCode === 404) return 'Page not found'
-  return props.error?.message || 'An error occurred'
-})
+  if (props.error?.statusCode === 404) return "Page not found";
+  return props.error?.message || "An error occurred";
+});
 
-const handleError = () => clearError({ redirect: '/' })
+const handleError = () => clearError({ redirect: "/" });
 </script>
 
 <template>
-  <div class="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-4">
+  <div
+    class="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-4"
+  >
     <div class="max-w-md w-full text-center bg-white p-8 rounded-xl shadow-lg">
       <div class="text-6xl font-bold text-red-500 mb-4">
-        {{ error?.statusCode || 'Oops!' }}
+        {{ error?.statusCode || "Oops!" }}
       </div>
 
       <h1 class="text-2xl font-semibold text-gray-800 mb-2">
@@ -25,7 +27,8 @@ const handleError = () => clearError({ redirect: '/' })
       </h1>
 
       <p class="text-gray-600 mb-6">
-        The page you're looking for might have been removed or is temporarily unavailable.
+        The page you're looking for might have been removed or is temporarily
+        unavailable.
       </p>
 
       <button
@@ -36,7 +39,10 @@ const handleError = () => clearError({ redirect: '/' })
       </button>
 
       <div class="mt-8 text-sm text-gray-500">
-        <p>Need help? <a href="#" class="text-blue-600 hover:underline">Contact support</a></p>
+        <p>
+          Need help?
+          <a href="#" class="text-blue-600 hover:underline">Contact support</a>
+        </p>
       </div>
     </div>
   </div>

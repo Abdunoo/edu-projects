@@ -16,7 +16,7 @@ The `BaseTable` component is a versatile and feature-rich table component for di
 ## Usage
 
 ```vue
-<BaseTable 
+<BaseTable
   :title="'My Table'"
   :columns="columns"
   :rows="rows"
@@ -42,23 +42,23 @@ The `BaseTable` component is a versatile and feature-rich table component for di
 
 ## Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `title` | `string` | `undefined` | Table title displayed in the header |
-| `columns` | `ITableColumn<T>[]` | Required | Column definitions |
-| `rows` | `T[] \| Ref<T[]>` | Required | Data rows to display |
-| `loading` | `boolean \| Ref<boolean>` | `false` | Loading state |
-| `page` | `number \| Ref<number>` | `1` | Current page number |
-| `perPage` | `number \| Ref<number>` | `10` | Items per page |
-| `totalRows` | `number \| Ref<number>` | `0` | Total number of rows |
-| `showExport` | `boolean` | `false` | Show export button |
-| `density` | `'comfortable' \| 'compact'` | `'comfortable'` | Row spacing density |
-| `stickyHeader` | `boolean` | `true` | Make header sticky on scroll |
-| `showIndex` | `boolean` | `false` | Show row index column |
-| `emptyText` | `string` | `'No data available'` | Text to display when no data |
-| `dateFormat` | `'short' \| 'long'` | `'short'` | Date format style |
-| `highlightOnHover` | `boolean` | `true` | Highlight rows on hover |
-| `stripedRows` | `boolean` | `true` | Apply zebra striping to rows |
+| Prop               | Type                         | Default               | Description                         |
+| ------------------ | ---------------------------- | --------------------- | ----------------------------------- |
+| `title`            | `string`                     | `undefined`           | Table title displayed in the header |
+| `columns`          | `ITableColumn<T>[]`          | Required              | Column definitions                  |
+| `rows`             | `T[] \| Ref<T[]>`            | Required              | Data rows to display                |
+| `loading`          | `boolean \| Ref<boolean>`    | `false`               | Loading state                       |
+| `page`             | `number \| Ref<number>`      | `1`                   | Current page number                 |
+| `perPage`          | `number \| Ref<number>`      | `10`                  | Items per page                      |
+| `totalRows`        | `number \| Ref<number>`      | `0`                   | Total number of rows                |
+| `showExport`       | `boolean`                    | `false`               | Show export button                  |
+| `density`          | `'comfortable' \| 'compact'` | `'comfortable'`       | Row spacing density                 |
+| `stickyHeader`     | `boolean`                    | `true`                | Make header sticky on scroll        |
+| `showIndex`        | `boolean`                    | `false`               | Show row index column               |
+| `emptyText`        | `string`                     | `'No data available'` | Text to display when no data        |
+| `dateFormat`       | `'short' \| 'long'`          | `'short'`             | Date format style                   |
+| `highlightOnHover` | `boolean`                    | `true`                | Highlight rows on hover             |
+| `stripedRows`      | `boolean`                    | `true`                | Apply zebra striping to rows        |
 
 ## Column Definition
 
@@ -66,13 +66,13 @@ The `ITableColumn` interface defines the structure of each column:
 
 ```typescript
 interface ITableColumn<T = Record<string, unknown>> {
-  key: string | keyof T | 'actions'
-  label: string
-  width?: string
-  align?: 'left' | 'center' | 'right'
-  sortable?: boolean
-  type?: 'text' | 'number' | 'date' | 'datetime' | 'boolean' | 'array'
-  formatter?: (value: any) => string | number | boolean
+  key: string | keyof T | "actions";
+  label: string;
+  width?: string;
+  align?: "left" | "center" | "right";
+  sortable?: boolean;
+  type?: "text" | "number" | "date" | "datetime" | "boolean" | "array";
+  formatter?: (value: any) => string | number | boolean;
 }
 ```
 
@@ -87,19 +87,19 @@ interface ITableColumn<T = Record<string, unknown>> {
 
 ## Events
 
-| Event | Payload | Description |
-|-------|---------|-------------|
-| `update:page` | `number` | Emitted when page changes |
-| `update:per-page` | `number` | Emitted when items per page changes |
-| `export` | None | Emitted when export button is clicked |
-| `sort` | `{ key: string \| null; dir: 'asc' \| 'desc' \| 'none' \| null }` | Emitted when sorting changes |
+| Event             | Payload                                                           | Description                           |
+| ----------------- | ----------------------------------------------------------------- | ------------------------------------- |
+| `update:page`     | `number`                                                          | Emitted when page changes             |
+| `update:per-page` | `number`                                                          | Emitted when items per page changes   |
+| `export`          | None                                                              | Emitted when export button is clicked |
+| `sort`            | `{ key: string \| null; dir: 'asc' \| 'desc' \| 'none' \| null }` | Emitted when sorting changes          |
 
 ## Slots
 
-| Slot | Props | Description |
-|------|-------|-------------|
-| `toolbar` | None | Custom content for the toolbar area |
-| `filters` | None | Custom filters below the header |
+| Slot         | Props            | Description                               |
+| ------------ | ---------------- | ----------------------------------------- |
+| `toolbar`    | None             | Custom content for the toolbar area       |
+| `filters`    | None             | Custom filters below the header           |
 | `cell:{key}` | `{ row, value }` | Custom cell rendering for specific column |
 
 ## Example with Nested Data
@@ -107,11 +107,16 @@ interface ITableColumn<T = Record<string, unknown>> {
 ```typescript
 // Column definitions
 const columns = [
-  { key: 'student.name', label: 'Student', sortable: true, type: 'text' },
-  { key: 'class.name', label: 'Class', sortable: true, type: 'text' },
-  { key: 'updatedAt', label: 'Last Updated', sortable: false, type: 'datetime' },
-  { key: 'actions', label: 'Actions' }
-]
+  { key: "student.name", label: "Student", sortable: true, type: "text" },
+  { key: "class.name", label: "Class", sortable: true, type: "text" },
+  {
+    key: "updatedAt",
+    label: "Last Updated",
+    sortable: false,
+    type: "datetime",
+  },
+  { key: "actions", label: "Actions" },
+];
 
 // Data with nested properties
 const rows = [
@@ -122,14 +127,14 @@ const rows = [
     updatedAt: "2025-09-18T17:27:12.686Z",
     class: {
       id: 6,
-      name: "Class 6"
+      name: "Class 6",
     },
     student: {
       id: 401,
-      name: "Student 4"
-    }
-  }
-]
+      name: "Student 4",
+    },
+  },
+];
 ```
 
 ## Custom Cell Rendering

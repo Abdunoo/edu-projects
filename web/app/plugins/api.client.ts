@@ -1,10 +1,10 @@
-import { ofetch } from 'ofetch'
+import { ofetch } from "ofetch";
 
 export default defineNuxtPlugin(() => {
   const api = ofetch.create({
-    baseURL: '/api/bridge',
+    baseURL: "/api/bridge",
     retry: 0,
-  })
+  });
 
-  return { provide: { api } }
-})
+  return { provide: { api } };
+});

@@ -1,5 +1,7 @@
 <template>
-  <div class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4">
+  <div
+    class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4"
+  >
     <div class="w-full max-w-md space-y-8">
       <div class="text-center">
         <h2 class="mt-6 text-3xl font-bold tracking-tight text-gray-900">
@@ -38,7 +40,10 @@
           </div>
         </div>
 
-        <div v-if="errorMessage" class="rounded-md bg-red-50 p-3 text-sm text-red-700">
+        <div
+          v-if="errorMessage"
+          class="rounded-md bg-red-50 p-3 text-sm text-red-700"
+        >
           {{ errorMessage }}
         </div>
 
@@ -58,31 +63,30 @@
 </template>
 
 <script setup lang="ts">
-definePageMeta({ layout: 'blank' })
+definePageMeta({ layout: "blank" });
 
-const email = ref('')
-const password = ref('')
-const errorMessage = ref('')
-const loading = ref(false)
+const email = ref("");
+const password = ref("");
+const errorMessage = ref("");
+const loading = ref(false);
 
-const router = useRouter()
-const route = useRoute()
-const auth = useAuthStore()
+const router = useRouter();
+const route = useRoute();
+const auth = useAuthStore();
 
 async function onSubmit() {
-  errorMessage.value = ''
-  loading.value = true
+  errorMessage.value = "";
+  loading.value = true;
   try {
-    await auth.login({ email: email.value, password: password.value })
-    const redirectTo = (route.query.redirect as string) || '/'
-    await router.replace(redirectTo)
+    await auth.login({ email: email.value, password: password.value });
+    const redirectTo = (route.query.redirect as string) || "/";
+    await router.replace(redirectTo);
   } catch (e: any) {
-    errorMessage.value = e?.data?.message || 'Invalid email or password'
+    errorMessage.value = e?.data?.message || "Invalid email or password";
   } finally {
-    loading.value = false
+    loading.value = false;
   }
 }
 
-useHead({ title: 'Login' })
+useHead({ title: "Login" });
 </script>
-

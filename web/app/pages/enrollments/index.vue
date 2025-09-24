@@ -1,112 +1,142 @@
 <script setup lang="ts">
-import type { ITableColumn, IListResponse, ListRequestPayload, FilterCondition } from '~~/types/data'
-import { FC } from '~~/utils/filters'
-import type { IEnrollment } from '~~/schemas/enrollment.schema'
-import { ENDPOINTS } from '~~/utils/constant'
-import { formatDateTime } from '~~/utils/functions'
+import type {
+  ITableColumn,
+  IListResponse,
+  ListRequestPayload,
+  FilterCondition,
+} from "~~/types/data";
+import { FC } from "~~/utils/filters";
+import type { IEnrollment } from "~~/schemas/enrollment.schema";
+import { ENDPOINTS } from "~~/utils/constant";
+import { formatDateTime } from "~~/utils/functions";
 
-useHead({ title: 'Enrollments' })
+useHead({ title: "Enrollments" });
 
-const { $api } = useNuxtApp()
-const toast = useCustomToast()
+const { $api } = useNuxtApp();
+const toast = useCustomToast();
 
 const table = useDataTable<IEnrollment>({
   perPage: 10,
   fetcher: async (payload: ListRequestPayload) => {
-    const response = await $api<IListResponse<IEnrollment>>(ENDPOINTS.ENROLLMENTS.LIST, {
-      method: 'POST',
-      body: payload,
-    })
-    const d = (response.data ?? {}) as Partial<IListResponse<IEnrollment>['data']> & { meta?: { totalRows?: number } }
-    const rows: IEnrollment[] = Array.isArray(d?.rows) ? (d.rows as IEnrollment[]) : []
-    const totalRows: number = (d?.totalRows ?? d?.meta?.totalRows ?? 0) as number
-    const pageCount: number = (d?.pageCount as number) ?? Math.max(1, Math.ceil((totalRows || 0) / (payload.perPage || 1)))
-    return { rows, totalRows, pageCount }
+    const response = await $api<IListResponse<IEnrollment>>(
+      ENDPOINTS.ENROLLMENTS.LIST,
+      {
+        method: "POST",
+        body: payload,
+      },
+    );
+    const d = (response.data ?? {}) as Partial<
+      IListResponse<IEnrollment>["data"]
+    > & { meta?: { totalRows?: number } };
+    const rows: IEnrollment[] = Array.isArray(d?.rows)
+      ? (d.rows as IEnrollment[])
+      : [];
+    const totalRows: number = (d?.totalRows ??
+      d?.meta?.totalRows ??
+      0) as number;
+    const pageCount: number =
+      (d?.pageCount as number) ??
+      Math.max(1, Math.ceil((totalRows || 0) / (payload.perPage || 1)));
+    return { rows, totalRows, pageCount };
   },
-})
+});
 
 // Filters
-const studentQuery = ref<string>('')
-const classQuery = ref<string>('')
+const studentQuery = ref<string>("");
+const classQuery = ref<string>("");
 
 watch([studentQuery, classQuery], () => {
-  const filters: FilterCondition[] = []
-  if (studentQuery.value?.trim()) filters.push(FC.text('studentId', studentQuery.value.trim(), 'eq'))
-  if (classQuery.value?.trim()) filters.push(FC.text('classId', classQuery.value.trim(), 'eq'))
-  table.resetFilters(filters)
-})
+  const filters: FilterCondition[] = [];
+  if (studentQuery.value?.trim())
+    filters.push(FC.text("studentId", studentQuery.value.trim(), "eq"));
+  if (classQuery.value?.trim())
+    filters.push(FC.text("classId", classQuery.value.trim(), "eq"));
+  table.resetFilters(filters);
+});
 
 function clearFilters() {
-  studentQuery.value = ''
-  classQuery.value = ''
+  studentQuery.value = "";
+  classQuery.value = "";
 }
 
 // Columns
 const columns = [
-  { 
-    key: 'id', 
-    label: 'ID', sortable: true},
-  { 
-    key: 'student.name', 
-    label: 'STUDENT', 
-    sortable: true},
-  { 
-    key: 'class.name', 
-    label: 'CLASS', 
-    sortable: true
-  },
-  { 
-    key: 'class.year', 
-    label: 'YEAR', 
-    sortable: true
-  },
-  { 
-    key: 'createdAt', 
-    label: 'CREATED', 
+  {
+    key: "id",
+    label: "ID",
     sortable: true,
-    formatter: (value: IEnrollment['createdAt']) => (value ? formatDateTime(value) : '-') as string
   },
-  { 
-    key: 'updatedAt', 
-    label: 'LAST UPDATED', 
+  {
+    key: "student.name",
+    label: "STUDENT",
     sortable: true,
-    formatter: (value: IEnrollment['updatedAt']) => (value ? formatDateTime(value) : '-') as string
   },
-  { 
-    key: 'actions', 
-    label: 'ACTIONS' 
-  }
-]
+  {
+    key: "class.name",
+    label: "CLASS",
+    sortable: true,
+  },
+  {
+    key: "class.year",
+    label: "YEAR",
+    sortable: true,
+  },
+  {
+    key: "createdAt",
+    label: "CREATED",
+    sortable: true,
+    formatter: (value: IEnrollment["createdAt"]) =>
+      (value ? formatDateTime(value) : "-") as string,
+  },
+  {
+    key: "updatedAt",
+    label: "LAST UPDATED",
+    sortable: true,
+    formatter: (value: IEnrollment["updatedAt"]) =>
+      (value ? formatDateTime(value) : "-") as string,
+  },
+  {
+    key: "actions",
+    label: "ACTIONS",
+  },
+];
 
 // Events
-const handlePageChange = (page: number) => table.setPage(page)
-const handlePerPageChange = (perPage: number) => table.setPerPage(perPage)
-const handleSort = (payload: { key: string | null; dir: 'asc' | 'desc' | 'none' | null }) => table.setSortFromSingle(payload)
+const handlePageChange = (page: number) => table.setPage(page);
+const handlePerPageChange = (perPage: number) => table.setPerPage(perPage);
+const handleSort = (payload: {
+  key: string | null;
+  dir: "asc" | "desc" | "none" | null;
+}) => table.setSortFromSingle(payload);
 
 const handleDelete = (row: IEnrollment) => {
-  toast.success(`Enrollment ${row.id} deleted (mock)`) // Hook your delete API here
-}
+  toast.success(`Enrollment ${row.id} deleted (mock)`); // Hook your delete API here
+};
 </script>
 
 <template>
   <div class="page-container">
     <header class="flex items-center justify-between mb-4">
       <div>
-        <h1 class="text-2xl font-semibold text-gray-900 flex items-center gap-2">
+        <h1
+          class="text-2xl font-semibold text-gray-900 flex items-center gap-2"
+        >
           <Icon name="i-lucide-badge-plus" class="text-primary" />
           Enrollment Management
         </h1>
         <p class="text-gray-600">Manage student enrollments to classes</p>
       </div>
       <NuxtLink to="/enrollments/create">
-        <span class="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/50">
+        <span
+          class="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/50"
+        >
           <Icon name="i-lucide-plus" class="h-4 w-4" />
           Add Enrollment
         </span>
       </NuxtLink>
     </header>
 
-    <BaseTable 
+    <BaseTable
       :title="'Enrollments'"
       :columns="columns as ITableColumn<IEnrollment>[]"
       :rows="table.rows"

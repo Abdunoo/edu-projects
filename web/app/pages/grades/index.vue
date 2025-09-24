@@ -1,118 +1,141 @@
 <script setup lang="ts">
-import type { ITableColumn, IListResponse, ListRequestPayload, FilterCondition } from '~~/types/data'
-import { FC } from '~~/utils/filters'
-import type { IGrade } from '~~/schemas/grade.schema'
-import { ENDPOINTS } from '~~/utils/constant'
-import { formatDateTime } from '~~/utils/functions'
+import type {
+  ITableColumn,
+  IListResponse,
+  ListRequestPayload,
+  FilterCondition,
+} from "~~/types/data";
+import { FC } from "~~/utils/filters";
+import type { IGrade } from "~~/schemas/grade.schema";
+import { ENDPOINTS } from "~~/utils/constant";
+import { formatDateTime } from "~~/utils/functions";
 
-useHead({ title: 'Grades' })
+useHead({ title: "Grades" });
 
-const { $api } = useNuxtApp()
-const toast = useCustomToast()
+const { $api } = useNuxtApp();
+const toast = useCustomToast();
 
 const table = useDataTable<IGrade>({
   perPage: 10,
   fetcher: async (payload: ListRequestPayload) => {
     const response = await $api<IListResponse<IGrade>>(ENDPOINTS.GRADES.LIST, {
-      method: 'POST',
+      method: "POST",
       body: payload,
-    })
-    const d = (response.data ?? {}) as Partial<IListResponse<IGrade>['data']> & { meta?: { totalRows?: number } }
-    const rows: IGrade[] = Array.isArray(d?.rows) ? (d.rows as IGrade[]) : []
-    const totalRows: number = (d?.totalRows ?? d?.meta?.totalRows ?? 0) as number
-    const pageCount: number = (d?.pageCount as number) ?? Math.max(1, Math.ceil((totalRows || 0) / (payload.perPage || 1)))
-    return { rows, totalRows, pageCount }
+    });
+    const d = (response.data ?? {}) as Partial<
+      IListResponse<IGrade>["data"]
+    > & { meta?: { totalRows?: number } };
+    const rows: IGrade[] = Array.isArray(d?.rows) ? (d.rows as IGrade[]) : [];
+    const totalRows: number = (d?.totalRows ??
+      d?.meta?.totalRows ??
+      0) as number;
+    const pageCount: number =
+      (d?.pageCount as number) ??
+      Math.max(1, Math.ceil((totalRows || 0) / (payload.perPage || 1)));
+    return { rows, totalRows, pageCount };
   },
-})
+});
 
 // Filters
-const studentIdQuery = ref<string>('')
-const subjectQuery = ref<string>('')
-const termQuery = ref<string>('')
+const studentIdQuery = ref<string>("");
+const subjectQuery = ref<string>("");
+const termQuery = ref<string>("");
 
 watch([studentIdQuery, subjectQuery, termQuery], () => {
-  const filters: FilterCondition[] = []
-  if (studentIdQuery.value?.trim()) filters.push(FC.text('studentId', studentIdQuery.value.trim(), 'eq'))
-  if (subjectQuery.value?.trim()) filters.push(FC.text('subject', subjectQuery.value.trim(), 'iLike'))
-  if (termQuery.value?.trim()) filters.push(FC.text('term', termQuery.value.trim(), 'iLike'))
-  table.resetFilters(filters)
-})
+  const filters: FilterCondition[] = [];
+  if (studentIdQuery.value?.trim())
+    filters.push(FC.text("studentId", studentIdQuery.value.trim(), "eq"));
+  if (subjectQuery.value?.trim())
+    filters.push(FC.text("subject", subjectQuery.value.trim(), "iLike"));
+  if (termQuery.value?.trim())
+    filters.push(FC.text("term", termQuery.value.trim(), "iLike"));
+  table.resetFilters(filters);
+});
 
 function clearFilters() {
-  studentIdQuery.value = ''
-  subjectQuery.value = ''
-  termQuery.value = ''
+  studentIdQuery.value = "";
+  subjectQuery.value = "";
+  termQuery.value = "";
 }
 
 // Columns
 const columns = [
-  { 
-    key: 'studentId', 
-    label: 'STUDENT', 
-    sortable: true 
-  },
-  { 
-    key: 'subject', 
-    label: 'SUBJECT', 
-    sortable: true 
-  },
-  { 
-    key: 'term', 
-    label: 'TERM', 
-    sortable: true 
-  },
-  { 
-    key: 'score', 
-    label: 'SCORE', 
-    sortable: true 
-  },
-  { 
-    key: 'createdAt', 
-    label: 'CREATED', 
+  {
+    key: "studentId",
+    label: "STUDENT",
     sortable: true,
-    formatter: (value: IGrade['createdAt']) => (value ? formatDateTime(value) : '-') as string
   },
-  { 
-    key: 'updatedAt', 
-    label: 'LAST UPDATED', 
+  {
+    key: "subject",
+    label: "SUBJECT",
     sortable: true,
-    formatter: (value: IGrade['updatedAt']) => (value ? formatDateTime(value) : '-') as string 
   },
-  { 
-    key: 'actions', 
-    label: 'ACTIONS' 
-  }
-]
+  {
+    key: "term",
+    label: "TERM",
+    sortable: true,
+  },
+  {
+    key: "score",
+    label: "SCORE",
+    sortable: true,
+  },
+  {
+    key: "createdAt",
+    label: "CREATED",
+    sortable: true,
+    formatter: (value: IGrade["createdAt"]) =>
+      (value ? formatDateTime(value) : "-") as string,
+  },
+  {
+    key: "updatedAt",
+    label: "LAST UPDATED",
+    sortable: true,
+    formatter: (value: IGrade["updatedAt"]) =>
+      (value ? formatDateTime(value) : "-") as string,
+  },
+  {
+    key: "actions",
+    label: "ACTIONS",
+  },
+];
 
 // Events
-const handlePageChange = (page: number) => table.setPage(page)
-const handlePerPageChange = (perPage: number) => table.setPerPage(perPage)
-const handleSort = (payload: { key: string | null; dir: 'asc' | 'desc' | 'none' | null }) => table.setSortFromSingle(payload)
+const handlePageChange = (page: number) => table.setPage(page);
+const handlePerPageChange = (perPage: number) => table.setPerPage(perPage);
+const handleSort = (payload: {
+  key: string | null;
+  dir: "asc" | "desc" | "none" | null;
+}) => table.setSortFromSingle(payload);
 
 const handleDelete = (row: IGrade) => {
-  toast.success(`Grade ${row.id} deleted (mock)`) // Implement delete API when available
-}
+  toast.success(`Grade ${row.id} deleted (mock)`); // Implement delete API when available
+};
 </script>
 
 <template>
   <div class="page-container">
     <header class="flex items-center justify-between mb-4">
       <div>
-        <h1 class="text-2xl font-semibold text-gray-900 flex items-center gap-2">
+        <h1
+          class="text-2xl font-semibold text-gray-900 flex items-center gap-2"
+        >
           <Icon name="i-lucide-graduation-cap" class="text-primary" />
           Grades Management
         </h1>
         <p class="text-gray-600">Manage students' grades</p>
       </div>
       <NuxtLink to="/grades/create">
-        <span class="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/50">
+        <span
+          class="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/50"
+        >
           <Icon name="i-lucide-plus" class="h-4 w-4" />
           Add Grade
         </span>
       </NuxtLink>
     </header>
 
-    <BaseTable 
+    <BaseTable
       :title="'Grades'"
       :columns="columns as ITableColumn<IGrade>[]"
       :rows="table.rows"
@@ -174,7 +197,9 @@ const handleDelete = (row: IGrade) => {
         </div>
       </template>
       <template #cell:updatedAt="{ row }">
-        <span class="text-gray-700">{{ (row as IGrade)?.updatedAt ?? '-' }}</span>
+        <span class="text-gray-700">{{
+          (row as IGrade)?.updatedAt ?? "-"
+        }}</span>
       </template>
     </BaseTable>
   </div>
