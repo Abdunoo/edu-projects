@@ -14,12 +14,14 @@ import type { CreateRoleDto, UpdateRoleDto } from './roles.dto';
 import { PaginationDto } from '@/common/types/pagination.dto';
 import { PaginationResponse } from '@/common/types/pagination-response.type';
 import { filterColumns, generateOrderBy } from '@/common/utils/filter-columns';
+import { DashboardGateway } from '../dashboard/dashboard.gateway';
 
 @Injectable()
 export class RolesService {
   constructor(
     @Inject(DATABASE_CONNECTION)
     private readonly db: NodePgDatabase<DbSchema>,
+    private readonly dashboardGateway: DashboardGateway,
   ) {}
 
   async create(dto: CreateRoleDto) {
@@ -35,6 +37,9 @@ export class RolesService {
         .insert(roles)
         .values({ name: dto.name })
         .returning();
+
+      this.dashboardGateway.triggerDashboardUpdate();
+
       return {
         statusCode: HttpStatus.OK,
         message: 'Berhasil menambahkan peran',
@@ -156,6 +161,8 @@ export class RolesService {
         .returning();
 
       if (!updated) throw new BadRequestException('Failed to update role');
+
+      this.dashboardGateway.triggerDashboardUpdate();
       return {
         statusCode: HttpStatus.OK,
         message: 'Berhasil mengupdate peran',
@@ -179,6 +186,8 @@ export class RolesService {
       if (!role) throw new NotFoundException(`Role with ID ${id} not found`);
 
       await this.db.delete(roles).where(eq(roles.id, id));
+
+      this.dashboardGateway.triggerDashboardUpdate();
       return {
         statusCode: HttpStatus.OK,
         message: 'Berhasil menghapus peran',

@@ -18,6 +18,7 @@ import { filterColumns, generateOrderBy } from '@/common/utils/filter-columns';
 import { exportCsvUtil } from '@/common/utils/function.util';
 import { handleServiceErrors } from '@/common/utils/error-handler';
 import { Logger } from 'winston';
+import { DashboardGateway } from '@/modules/dashboard/dashboard.gateway';
 
 @Injectable()
 export class StudentsService {
@@ -26,6 +27,7 @@ export class StudentsService {
     private readonly db: NodePgDatabase<DbSchema>,
     @Inject('winston')
     private readonly logger: Logger,
+    private readonly dashboardGateway: DashboardGateway,
   ) {}
 
   async create(dto: CreateStudentDto) {
@@ -39,6 +41,7 @@ export class StudentsService {
           guardianContact: dto.guardianContact ?? null,
         })
         .returning();
+      this.dashboardGateway.triggerDashboardUpdate();
       return {
         statusCode: HttpStatus.OK,
         message: 'Berhasil menambahkan siswa',
@@ -74,6 +77,7 @@ export class StudentsService {
 
   async list(paginationDto: PaginationDto): Promise<PaginationResponse<any>> {
     try {
+      this.logger.info('Fetching list of students');
       const { page, perPage, filters, joinOperator, sort } = paginationDto;
       const offset = (page - 1) * perPage;
 
@@ -168,6 +172,7 @@ export class StudentsService {
         .set(updateData)
         .where(eq(students.id, id))
         .returning();
+      this.dashboardGateway.triggerDashboardUpdate();
       return {
         statusCode: HttpStatus.OK,
         message: 'Berhasil mengupdate siswa',
@@ -187,6 +192,7 @@ export class StudentsService {
     try {
       const row = await this.findOne(id);
       await this.db.delete(students).where(eq(students.id, id));
+      this.dashboardGateway.triggerDashboardUpdate();
       return {
         statusCode: HttpStatus.OK,
         message: 'Berhasil menghapus siswa',

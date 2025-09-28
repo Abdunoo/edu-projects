@@ -206,7 +206,6 @@
 <script setup lang="ts">
 useHead({ title: "Help & Support" });
 
-// Tab configuration
 const tabs = [
   { key: "faq", label: "FAQs", icon: "i-lucide-help-circle", slot: "faq" },
   {
@@ -217,8 +216,6 @@ const tabs = [
   },
   { key: "docs", label: "Documentation", icon: "i-lucide-book", slot: "docs" },
 ];
-
-// FAQ items
 const faqItems = [
   {
     label: "How do I reset my password?",
@@ -264,7 +261,6 @@ const faqItems = [
   },
 ];
 
-// Support form
 const supportForm = reactive({
   subject: "",
   category: "",
@@ -272,7 +268,6 @@ const supportForm = reactive({
   description: "",
 });
 
-// Support categories
 const supportCategories = [
   { label: "Technical Issue", value: "technical" },
   { label: "Account Access", value: "account" },
@@ -281,14 +276,12 @@ const supportCategories = [
   { label: "General Inquiry", value: "general" },
 ];
 
-// Priority options
 const priorityOptions = [
   { label: "Low", value: "low" },
   { label: "Medium", value: "medium" },
   { label: "High", value: "high" },
 ];
 
-// Documentation links
 const documentationLinks = [
   {
     id: 1,
@@ -322,12 +315,9 @@ const documentationLinks = [
   },
 ];
 
-// Submit support request
 const submitSupportRequest = () => {
-  // In a real application, this would send the form data to a backend API
   alert("Support request submitted! Our team will contact you shortly.");
 
-  // Reset form after submission
   supportForm.subject = "";
   supportForm.category = "";
   supportForm.priority = "medium";

@@ -2,7 +2,6 @@
 import { computed, ref, unref, withDefaults, type Ref } from "vue";
 import type { ITableColumn } from "~~/types/data";
 
-// Helper: get nested property via "a.b.c"
 function getNestedValue(obj: any, path: string): any {
   if (!path) return obj;
   const keys = path.split(".");
@@ -12,7 +11,6 @@ function getNestedValue(obj: any, path: string): any {
   );
 }
 
-// Default fallback (no column-level formatter)
 function defaultDisplay(value: any): string {
   if (value === null || value === undefined || value === "") return "-";
   if (Array.isArray(value)) return value.join(", ");
@@ -26,7 +24,6 @@ function defaultDisplay(value: any): string {
   return String(value);
 }
 
-// ==== Props & Emits =========================================================
 type Props = {
   title?: string;
   columns: ITableColumn<T>[];
@@ -71,7 +68,6 @@ const emit = defineEmits<{
   ): void;
 }>();
 
-// ==== State & Derived ========================================================
 const pageVal = computed(() => Number(unref(props.page) ?? 1));
 const perPageVal = computed(() => Number(unref(props.perPage) ?? 10));
 const totalRowsVal = computed(() => Number(unref(props.totalRows) ?? 0));
@@ -145,7 +141,6 @@ function ariaSortFor(col: ITableColumn<T>) {
       : "none";
 }
 
-// Compute a cell value once (supports nested keys)
 function cellValue(row: T, col: ITableColumn<T>): any {
   const keyStr = String(col.key);
   return keyStr.includes(".")

@@ -16,6 +16,7 @@ export default defineNuxtConfig({
     },
     public: {
       apiBase: process.env.PUBLIC_API_BASE ?? "http://localhost:3001", // for direct calls
+      wsUrl: process.env.WS_URL ?? "ws://localhost:3001/dashboard", // WebSocket URL
     },
   },
 

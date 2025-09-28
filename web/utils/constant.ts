@@ -1,6 +1,6 @@
 // API Endpoints
 export const API_BASE_URL =
-  process.env.NUXT_PUBLIC_API_URL || "http://localhost:3000/api";
+  process.env.NUXT_PUBLIC_API_BASE || "http://localhost:3001";
 
 export const ENDPOINTS = {
   AUTH: {
@@ -23,6 +23,7 @@ export const ENDPOINTS = {
     BASE: "/users",
     LIST: "/users/list",
     EXPORT: "/users/export",
+    RESET_PASSWORD: "/users/reset-password",
   },
   ROLES: {
     BASE: "/roles",

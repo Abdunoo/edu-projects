@@ -14,15 +14,17 @@ import {
   formatText,
 } from "../../../utils/functions";
 import { ENDPOINTS } from "~~/utils/constant";
+import { Permission } from "~~/types/permissions";
 
-useHead({
-  title: "Students",
+// Define page meta for permission check
+definePageMeta({
+  requiresAuth: true,
+  permissionsAny: [Permission.STUDENT_READ],
 });
-// Composables
+
 const { $api } = useNuxtApp();
 const toast = useCustomToast();
 
-// DataTable
 const table = useDataTable<IStudent>({
   perPage: 10,
   fetcher: async (payload: ListRequestPayload) => {
@@ -190,7 +192,7 @@ const handleExport = async () => {
           Manage your application students and their permissions
         </p>
       </div>
-      <NuxtLink to="/students/create">
+      <NuxtLink v-can="Permission.STUDENT_CREATE" to="/students/create">
         <span
           class="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/50"
         >
@@ -244,6 +246,7 @@ const handleExport = async () => {
       <template #cell:actions="{ row }">
         <div class="flex items-center space-x-2">
           <NuxtLink
+            v-can="Permission.STUDENT_UPDATE"
             :to="`/students/${(row as IStudent).id}`"
             class="inline-flex items-center rounded-lg px-2 py-1 text-blue-600 hover:bg-blue-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/30"
             aria-label="Edit"
@@ -251,6 +254,7 @@ const handleExport = async () => {
             <Icon name="i-heroicons-pencil" class="h-4 w-4" />
           </NuxtLink>
           <button
+            v-can="Permission.STUDENT_DELETE"
             type="button"
             class="inline-flex items-center rounded-lg px-2 py-1 text-amber-600 hover:bg-amber-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500/30"
             aria-label="Delete"

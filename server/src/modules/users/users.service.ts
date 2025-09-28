@@ -24,12 +24,15 @@ import { filterColumns, generateOrderBy } from '@/common/utils/filter-columns';
 import { handleServiceErrors } from '@/common/utils/error-handler';
 import { Logger } from 'winston';
 import { CreateUserDto, UpdateUserDto } from './users.dto';
+import { DashboardGateway } from '@/modules/dashboard/dashboard.gateway';
+import { ResetPasswordDto } from '@/auth/dto/reset-password.dto';
 
 @Injectable()
 export class UsersService {
   constructor(
     @Inject(DATABASE_CONNECTION)
     private readonly db: NodePgDatabase<DbSchema>,
+    private readonly dashboardGateway: DashboardGateway,
     @Inject('winston')
     private readonly logger: Logger,
   ) {}
@@ -70,6 +73,7 @@ export class UsersService {
         })
         .returning();
 
+      this.dashboardGateway.triggerDashboardUpdate();
       // Get user with role
       const userWithRole = await this.db.query.users.findFirst({
         where: eq(users.id, newUser.id),
@@ -267,6 +271,8 @@ export class UsersService {
         throw new BadRequestException('Failed to update user');
       }
 
+      this.dashboardGateway.triggerDashboardUpdate();
+
       return {
         statusCode: HttpStatus.OK,
         message: 'Berhasil mengupdate pengguna',
@@ -296,6 +302,7 @@ export class UsersService {
       }
 
       await this.db.delete(users).where(eq(users.id, id));
+      this.dashboardGateway.triggerDashboardUpdate();
 
       return {
         statusCode: HttpStatus.OK,
@@ -363,5 +370,42 @@ export class UsersService {
     }
 
     return lines.join('\n');
+  }
+
+  async resetPassword(resetPasswordDto: ResetPasswordDto) {
+    try {
+      this.logger.debug(
+        `Resetting password for user ID: ${resetPasswordDto.userId}`,
+      );
+      // generate random password
+      const randomPassword = this.generateRandomPassword();
+      // hash password
+      const hashedPassword = await bcrypt.hash(randomPassword, 10);
+      // update user password
+      resetPasswordDto.updatedAt = new Date();
+      resetPasswordDto.password = hashedPassword;
+      await this.db
+        .update(users)
+        .set(resetPasswordDto)
+        .where(eq(users.id, resetPasswordDto.userId));
+    } catch (error) {
+      handleServiceErrors(
+        error,
+        this.logger,
+        'UsersService',
+        'Failed to reset password',
+      );
+    }
+  }
+
+  private generateRandomPassword() {
+    const characters =
+      'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let password = '';
+    for (let i = 0; i < 12; i++) {
+      const randomIndex = Math.floor(Math.random() * characters.length);
+      password += characters.charAt(randomIndex);
+    }
+    return password;
   }
 }

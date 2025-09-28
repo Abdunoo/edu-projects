@@ -2,8 +2,9 @@
 defineEmits(["toggle-mobile-menu"]);
 const auth = useAuthStore();
 
-function handleLogout() {
-  auth.logout();
+async function handleLogout() {
+  await auth.logout();
+  navigateTo("/login");
 }
 </script>
 
@@ -91,7 +92,7 @@ function handleLogout() {
             class="invisible absolute left-0 mb-2 w-40 origin-bottom-left rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none group-hover:visible"
           >
             <NuxtLink
-              href="#"
+              href="/profile"
               class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
               >Your Profile</NuxtLink
             >

@@ -6,7 +6,6 @@ const isMobileMenuOpen = ref(false);
 const isMobile = ref(false);
 const mobileMenuRef = ref<HTMLElement | null>(null);
 
-// Close mobile menu when route changes
 watch(
   () => route.path,
   () => {
@@ -14,7 +13,6 @@ watch(
   },
 );
 
-// Close mobile menu when clicking outside the sidebar
 const handleClickOutside = (event: MouseEvent) => {
   const target = event.target as Node | null;
   if (!isMobileMenuOpen.value) return;
@@ -23,7 +21,6 @@ const handleClickOutside = (event: MouseEvent) => {
   isMobileMenuOpen.value = false;
 };
 
-// Add keyboard navigation for mobile menu
 const handleKeydown = (e: KeyboardEvent) => {
   if (e.key === "Escape" && isMobileMenuOpen.value) {
     isMobileMenuOpen.value = false;
@@ -31,7 +28,6 @@ const handleKeydown = (e: KeyboardEvent) => {
 };
 
 onMounted(() => {
-  // Track viewport width to determine mobile vs desktop (Tailwind lg breakpoint: 1024px)
   const mq = window.matchMedia("(max-width: 1023px)");
   const setFromMQ = () => {
     isMobile.value = mq.matches;
@@ -41,7 +37,6 @@ onMounted(() => {
 
   document.addEventListener("keydown", handleKeydown);
   document.addEventListener("mousedown", handleClickOutside);
-  // Cleanup media query listener on unmount
   onUnmounted(() => {
     mq.removeEventListener?.("change", setFromMQ);
   });
@@ -52,22 +47,17 @@ onUnmounted(() => {
   document.removeEventListener("mousedown", handleClickOutside);
 });
 
-// Toggle mobile menu
 const toggleMobileMenu = () => {
   isMobileMenuOpen.value = !isMobileMenuOpen.value;
 };
-
-// (Dark mode removed)
 </script>
 
 <template>
   <div
     class="flex flex-col h-screen overflow-hidden bg-gray-50 transition-colors duration-200"
   >
-    <!-- Header -->
     <BaseHeader :is-mobile="isMobile" @toggle-mobile-menu="toggleMobileMenu" />
 
-    <!-- Mobile sidebar overlay -->
     <div
       v-if="isMobileMenuOpen"
       class="fixed inset-0 z-30 bg-black/50 lg:hidden"
@@ -112,6 +102,7 @@ const toggleMobileMenu = () => {
           role="dialog"
           aria-modal="true"
         >
+          <!-- <AppSidebar :is-mobile="true" @navigate="isMobileMenuOpen = false" /> -->
           <BaseSidebar :is-mobile="true" @navigate="isMobileMenuOpen = false" />
         </div>
       </Transition>
@@ -119,6 +110,7 @@ const toggleMobileMenu = () => {
       <!-- Static sidebar for desktop -->
       <div class="hidden lg:flex lg:flex-shrink-0">
         <div class="w-64 flex flex-col h-full">
+          <!-- <AppSidebar /> -->
           <BaseSidebar />
         </div>
       </div>

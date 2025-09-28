@@ -24,6 +24,10 @@ import { ZodValidationPipe } from '@/common/pipes/zod-validation.pipe';
 import { createUserSchema, updateUserSchema } from './users.dto';
 import { CsrfGuard } from '@/auth/guards/csrf.guard';
 import { Response } from 'express';
+import {
+  ResetPasswordDto,
+  resetPasswordSchema,
+} from '@/auth/dto/reset-password.dto';
 
 @Controller('users')
 @UseGuards(JwtAuthGuard, PermissionsGuard)
@@ -93,5 +97,16 @@ export class UsersController {
     res.setHeader('Content-Type', 'text/csv');
     res.setHeader('Content-Disposition', 'attachment; filename="users.csv"');
     return res.send(csv);
+  }
+
+  @Post('reset-password')
+  @RequirePermissions(Permission.USER_UPDATE)
+  @UseGuards(CsrfGuard)
+  @HttpCode(HttpStatus.OK)
+  async resetPassword(
+    @Body(new ZodValidationPipe(resetPasswordSchema))
+    resetPasswordDto: ResetPasswordDto,
+  ) {
+    return this.usersService.resetPassword(resetPasswordDto);
   }
 }

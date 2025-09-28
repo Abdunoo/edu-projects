@@ -1,7 +1,5 @@
-// composables/useToast.ts
 import type { AvatarProps, ButtonProps, ToastProps } from "@nuxt/ui";
 
-// If you own this type, align it with Nuxt UI Button props.
 export type ToastAction = ButtonProps & { label: string }; // includes onClick?: (e?: MouseEvent) => any
 export type ToastOptions = {
   title?: string;
@@ -35,7 +33,6 @@ export function useCustomToast() {
       progress: options.progress ?? true,
     });
 
-    // Optional per-toast duration (Nuxt UI officially recommends global duration)
     if (options.duration && t?.id != null) {
       setTimeout(() => toast.remove(t.id), options.duration);
     }

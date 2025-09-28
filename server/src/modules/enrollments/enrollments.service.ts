@@ -15,12 +15,19 @@ import { PaginationDto } from '@/common/types/pagination.dto';
 import { PaginationResponse } from '@/common/types/pagination-response.type';
 import { filterColumns, generateOrderBy } from '@/common/utils/filter-columns';
 import { exportCsvUtil } from '@/common/utils/function.util';
+import { Logger } from 'winston';
+import { DashboardGateway } from '@/modules/dashboard/dashboard.gateway';
+import { IDashboardUpdate } from '@/modules/dashboard/dashboard.dto';
+import { handleServiceErrors } from '@/common/utils/error-handler';
 
 @Injectable()
 export class EnrollmentsService {
   constructor(
     @Inject(DATABASE_CONNECTION)
     private readonly db: NodePgDatabase<DbSchema>,
+    private readonly dashboardGateway: DashboardGateway,
+    @Inject('winston')
+    private readonly logger: Logger,
   ) {}
 
   async create(dto: CreateEnrollmentDto) {
@@ -32,13 +39,19 @@ export class EnrollmentsService {
           classId: dto.classId,
         })
         .returning();
+      this.dashboardGateway.triggerDashboardUpdate();
       return {
         statusCode: HttpStatus.OK,
         message: 'Berhasil menambahkan enrollment',
         data: row,
       };
     } catch (e) {
-      throw new BadRequestException('Failed to create enrollment');
+      handleServiceErrors(
+        e,
+        this.logger,
+        'EnrollmentsService',
+        'Failed to create enrollment',
+      );
     }
   }
 
@@ -167,6 +180,7 @@ export class EnrollmentsService {
         })
         .where(eq(enrollments.id, id))
         .returning();
+      this.dashboardGateway.triggerDashboardUpdate();
       return {
         statusCode: HttpStatus.OK,
         message: 'Berhasil mengupdate enrollment',

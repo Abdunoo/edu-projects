@@ -10,6 +10,13 @@ import { FC } from "~~/utils/filters";
 import type { IUser } from "~~/schemas/user.schema";
 import { ENDPOINTS, ROLES } from "~~/utils/constant";
 import { formatDateTime } from "~~/utils/functions";
+import { Permission } from "~~/types/permissions";
+
+// Define page meta for permission check
+definePageMeta({
+  requiresAuth: true,
+  permissionsAny: [Permission.USER_READ],
+});
 
 // Composables
 const toast = useCustomToast();
@@ -175,6 +182,27 @@ const statStudents = computed(
       (u) => u.role?.name?.toLowerCase() === ROLES.STUDENT,
     ).length,
 );
+
+const handleResetPassword = async (user: IUser) => {
+  const response = await $api(ENDPOINTS.USERS.RESET_PASSWORD, {
+    method: "POST",
+    body: { userId: user.id },
+  });
+
+  toast.action(
+    "Password reset token has been sent to user's email",
+    "Password Reset",
+    [
+      {
+        label: "Copy",
+        onClick: () => {
+          navigator.clipboard.writeText(response.data?.token ?? "");
+          toast.success("Token copied to clipboard");
+        },
+      },
+    ],
+  );
+};
 </script>
 
 <template>
@@ -193,6 +221,7 @@ const statStudents = computed(
         </p>
       </div>
       <NuxtLink
+        v-can="Permission.USER_CREATE"
         to="/users/create"
         class="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/50"
       >
@@ -275,7 +304,19 @@ const statStudents = computed(
       <!-- Custom slot for actions -->
       <template #cell:actions="{ row }">
         <div class="flex items-center space-x-2">
+          <!-- button reset password -->
+          <button
+            v-can="Permission.USER_UPDATE"
+            type="button"
+            class="inline-flex items-center rounded-lg px-2 py-1 text-blue-600 hover:bg-blue-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/30"
+            aria-label="Edit"
+            @click="handleResetPassword(row as IUser)"
+          >
+            <Icon name="i-lucide-lock" class="h-4 w-4" />
+          </button>
+          <!-- button edit -->
           <NuxtLink
+            v-can="Permission.USER_UPDATE"
             :to="`/users/${(row as IUser).id}`"
             class="inline-flex items-center rounded-lg px-2 py-1 text-blue-600 hover:bg-blue-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/30"
             aria-label="Edit"
@@ -283,6 +324,7 @@ const statStudents = computed(
             <Icon name="i-lucide-pencil" class="h-4 w-4" />
           </NuxtLink>
           <button
+            v-can="Permission.USER_DELETE"
             type="button"
             class="inline-flex items-center rounded-lg px-2 py-1 text-amber-600 hover:bg-amber-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500/30"
             aria-label="Delete"

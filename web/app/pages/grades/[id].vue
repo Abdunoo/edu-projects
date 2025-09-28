@@ -1,123 +1,220 @@
 <template>
-  <div class="page-container">
-    <header class="page-header">
-      <h1 class="page-title">Edit Grade</h1>
-      <p class="page-description">Update the grade information</p>
-    </header>
-
-    <div class="page-content">
-      <form class="space-y-4 max-w-2xl" @submit.prevent="onSubmit">
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+  <div v-if="loading" class="flex h-full items-center justify-center">
+    <i
+      class="i-lucide-loader-circle text-3xl animate-spin"
+      aria-hidden="true"
+    />
+  </div>
+  <div v-else class="mx-auto max-w-3xl p-6">
+    <!-- Top Card -->
+    <section
+      class="rounded-xl border border-gray-200/60 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900"
+    >
+      <div class="flex items-start justify-between gap-4 p-6">
+        <div class="flex items-center gap-3">
+          <!-- Icon -->
+          <div
+            class="flex h-10 w-10 items-center justify-center rounded-full bg-gray-100 dark:bg-gray-800"
+          >
+            <i
+              class="i-lucide-clipboard-check text-gray-600 dark:text-gray-300"
+              aria-hidden="true"
+            ></i>
+          </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700">ID</label>
-            <input
-              v-model="form.id"
-              type="text"
-              disabled
-              class="mt-1 w-full rounded-md border border-gray-200 bg-gray-50 px-3 py-2 text-gray-600"
-            />
+            <h1 class="text-lg font-semibold">Edit Grade</h1>
+            <p class="text-sm text-gray-500 dark:text-gray-400">
+              Update grade information.
+            </p>
           </div>
         </div>
 
+        <NuxtLink
+          to="/grades"
+          class="inline-flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-200"
+        >
+          <i class="i-lucide-arrow-left text-base" aria-hidden="true"></i>
+          Back to Grades
+        </NuxtLink>
+      </div>
+    </section>
+
+    <!-- Form Card -->
+    <section
+      class="mt-4 rounded-xl border border-gray-200/60 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900"
+    >
+      <!-- Header -->
+      <header class="border-b border-gray-100 p-6 dark:border-gray-800">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-base font-medium">Grade Details</p>
+            <p class="text-sm text-gray-500 dark:text-gray-400">
+              Update the grade information below.
+            </p>
+          </div>
+        </div>
+      </header>
+
+      <!-- Form -->
+      <form class="space-y-5 p-6" @submit.prevent="onSubmit">
+        <!-- Student ID -->
         <div>
-          <label class="block text-sm font-medium text-gray-700"
+          <label for="studentId" class="mb-1 block text-sm font-medium"
             >Student ID</label
           >
-          <input
+          <select
+            id="studentId"
             v-model="form.studentId"
-            type="text"
-            class="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="Student ID"
-          />
+            class="block w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:border-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-900/10 dark:border-gray-700 dark:bg-gray-950 dark:text-gray-100"
+          >
+            <option value="" disabled>Select Student</option>
+            <option v-for="s in studentsOptions" :key="s.id" :value="s.id">
+              {{ s.name }}
+            </option>
+          </select>
+          <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+            Select the student
+          </p>
         </div>
 
+        <!-- Subject and Term -->
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <!-- Subject -->
           <div>
-            <label class="block text-sm font-medium text-gray-700"
+            <label for="subject" class="mb-1 block text-sm font-medium"
               >Subject</label
             >
             <input
+              id="subject"
               v-model="form.subject"
               type="text"
-              class="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="Subject"
+              class="block w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:border-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-900/10 dark:border-gray-700 dark:bg-gray-950 dark:text-gray-100"
             />
+            <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+              Enter the subject name
+            </p>
           </div>
+
+          <!-- Term -->
           <div>
-            <label class="block text-sm font-medium text-gray-700">Term</label>
+            <label for="term" class="mb-1 block text-sm font-medium"
+              >Term</label
+            >
             <input
+              id="term"
               v-model="form.term"
               type="text"
-              class="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="e.g. Semester 1"
+              class="block w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:border-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-900/10 dark:border-gray-700 dark:bg-gray-950 dark:text-gray-100"
             />
+            <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+              Enter the academic term
+            </p>
           </div>
         </div>
 
+        <!-- Score -->
         <div>
-          <label class="block text-sm font-medium text-gray-700"
+          <label for="score" class="mb-1 block text-sm font-medium"
             >Score (0-100)</label
           >
           <input
+            id="score"
             v-model.number="form.score"
             type="number"
             min="0"
             max="100"
-            class="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="Score"
+            class="block w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:border-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-900/10 dark:border-gray-700 dark:bg-gray-950 dark:text-gray-100"
           />
+          <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+            Enter a score between 0 and 100
+          </p>
         </div>
 
+        <!-- Error list -->
         <div
           v-if="formErrors.length"
-          class="rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-800"
+          class="rounded-lg border border-red-200 bg-red-50/80 p-4 text-red-800 dark:border-red-900/50 dark:bg-red-950/40 dark:text-red-200"
+          role="alert"
+          aria-live="polite"
         >
-          <ul class="list-disc pl-5 space-y-1">
+          <div class="flex items-center gap-2">
+            <i class="i-lucide-triangle-alert" aria-hidden="true"></i>
+            <p class="font-medium">Please fix the following</p>
+          </div>
+          <ul class="mt-2 list-disc space-y-1 pl-5 text-sm">
             <li v-for="(err, idx) in formErrors" :key="idx">
-              {{ err.path || "" }}{{ err.path ? ": " : "" }}{{ err.message }}
+              <span v-if="err.path" class="font-medium">{{ err.path }}:</span>
+              <span> {{ err.message }}</span>
             </li>
           </ul>
         </div>
 
-        <div class="flex items-center gap-3">
+        <!-- Actions -->
+        <div class="flex items-center gap-3 pt-2">
           <button
             type="submit"
+            class="inline-flex items-center gap-2 rounded-lg bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-black/90 focus:outline-none focus:ring-2 focus:ring-gray-900/20 disabled:cursor-not-allowed disabled:opacity-60 dark:bg-white dark:text-gray-900 dark:hover:bg-white/90"
             :disabled="submitting"
-            class="inline-flex items-center rounded-md bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 disabled:opacity-60"
           >
             <span
               v-if="submitting"
-              class="i-lucide-loader-circle mr-2 animate-spin"
+              class="inline-block h-4 w-4 animate-spin rounded-full border-2 border-current border-r-transparent align-[-2px]"
+              aria-hidden="true"
             />
-            Save Changes
+            <i v-else class="i-lucide-check text-base" aria-hidden="true"></i>
+            Update
           </button>
+
           <NuxtLink
             to="/grades"
-            class="inline-flex items-center rounded-md border border-gray-300 px-4 py-2 text-gray-700 hover:bg-gray-50"
-            >Cancel</NuxtLink
+            class="inline-flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-900/10 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-200 dark:hover:bg-gray-800"
           >
+            <i class="i-lucide-x text-base" aria-hidden="true"></i>
+            Cancel
+          </NuxtLink>
         </div>
       </form>
-    </div>
+
+      <!-- Footer -->
+      <footer
+        class="border-t border-gray-100 p-6 text-xs text-gray-500 dark:border-gray-800 dark:text-gray-400"
+      >
+        Tip: Scores must be between 0 and 100.
+      </footer>
+    </section>
   </div>
 </template>
 
 <script setup lang="ts">
-import { reactive, ref } from "vue";
-import { useRoute, useRouter } from "#imports";
+import { reactive, ref, computed } from "vue";
+import { useRouter, useRoute } from "vue-router";
 import { validateForm } from "~~/utils/validation";
 import { gradeSchema, type IGrade } from "~~/schemas/grade.schema";
 import type { IBaseApiResponse } from "~~/types/api";
 import { ENDPOINTS } from "~~/utils/constant";
+import { Permission } from "~~/types/permissions";
 
-const route = useRoute();
+definePageMeta({
+  requiresAuth: true,
+  permissionsAny: [Permission.GRADE_UPDATE],
+});
+
 const router = useRouter();
+const route = useRoute();
 const { $api } = useNuxtApp();
 const toast = useCustomToast();
 
+const gradeId = computed(() => route.params.id as string);
+const loading = ref(true);
 const submitting = ref(false);
 const formErrors = ref<Array<{ path?: string; message: string }>>([]);
 
+const studentsOptions = ref<Array<{ id: string; name: string }>>([]);
+
+// Form state
 const form = reactive<IGrade>({
   id: "",
   studentId: "",
@@ -128,35 +225,82 @@ const form = reactive<IGrade>({
   updatedAt: undefined,
 });
 
-const recId = route.params.id as string;
+// Build the schema for update (id/createdAt/updatedAt optional)
+const updateSchema = gradeSchema.partial({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
 
-// Fetch grade
-let dataItem: IGrade | null = null;
-let fetchError: unknown = null;
+// Fetch grade data
+const fetchGradeData = async () => {
+  try {
+    loading.value = true;
+    const response = await $api<IBaseApiResponse<IGrade>>(
+      `${ENDPOINTS.GRADES.BASE}/${gradeId.value}`,
+      { method: "GET" },
+    );
+
+    const gradeData = response.data;
+
+    // Populate the form with grade data
+    form.id = gradeData.id;
+    form.studentId = gradeData.studentId;
+    form.subject = gradeData.subject;
+    form.term = gradeData.term;
+    form.score = gradeData.score;
+  } catch (err: unknown) {
+    const message =
+      (err as { data?: { message?: string } })?.data?.message ||
+      "Failed to fetch grade data";
+    toast.error(message);
+    router.back();
+  } finally {
+    loading.value = false;
+  }
+};
+
+const fetchStudentsData = async () => {
+  try {
+    loading.value = true;
+    const response = await $api<
+      IBaseApiResponse<Array<{ id: string; name: string }>>
+    >(ENDPOINTS.STUDENTS.BASE, { method: "GET" });
+
+    const studentsData = response.data;
+
+    // Populate the form with grade data
+    studentsOptions.value = studentsData.map((s) => ({
+      id: s.id,
+      name: s.name,
+    }));
+  } catch (err: unknown) {
+    const message =
+      (err as { data?: { message?: string } })?.data?.message ||
+      "Failed to fetch students data";
+    toast.error(message);
+    router.back();
+  } finally {
+    loading.value = false;
+  }
+};
+
 try {
-  const { data } = await $api<IBaseApiResponse<IGrade>>(
-    `${ENDPOINTS.GRADES.BASE}/${recId}`,
-    { method: "GET" },
-  );
-  dataItem = data;
-} catch (e) {
-  fetchError = e;
+  await fetchGradeData();
+  await fetchStudentsData();
+} catch (err: unknown) {
+  const message =
+    (err as { data?: { message?: string } })?.data?.message ||
+    "Failed to fetch grade data";
+  toast.error(message);
+  router.back();
 }
-
-if (fetchError) {
-  toast.error("Failed to load grade");
-  router.push("/grades");
-} else if (dataItem) {
-  Object.assign(form, dataItem);
-}
-
-const editSchema = gradeSchema.partial({ createdAt: true, updatedAt: true });
 
 const onSubmit = async () => {
   formErrors.value = [];
   submitting.value = true;
   try {
-    const { success, data, errors } = validateForm(editSchema, form);
+    const { success, data, errors } = validateForm(updateSchema, form);
     if (!success) {
       formErrors.value =
         (errors as Array<{ path?: string; message: string }>) || [];
@@ -170,13 +314,16 @@ const onSubmit = async () => {
       score: data!.score,
     };
 
-    await $api<IBaseApiResponse<IGrade>>(`${ENDPOINTS.GRADES.BASE}/${recId}`, {
-      method: "PUT",
-      body: payload,
-    });
+    await $api<IBaseApiResponse<IGrade>>(
+      `${ENDPOINTS.GRADES.BASE}/${gradeId.value}`,
+      {
+        method: "PUT",
+        body: payload,
+      },
+    );
 
     toast.success("Grade updated successfully");
-    router.push("/grades");
+    router.back();
   } catch (err: unknown) {
     const message =
       (err as { data?: { message?: string } })?.data?.message ||
@@ -187,3 +334,7 @@ const onSubmit = async () => {
   }
 };
 </script>
+
+<style scoped>
+/* No custom styles needed; Tailwind handles layout & states. */
+</style>

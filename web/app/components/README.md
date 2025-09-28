@@ -105,7 +105,6 @@ interface ITableColumn<T = Record<string, unknown>> {
 ## Example with Nested Data
 
 ```typescript
-// Column definitions
 const columns = [
   { key: "student.name", label: "Student", sortable: true, type: "text" },
   { key: "class.name", label: "Class", sortable: true, type: "text" },
@@ -118,7 +117,6 @@ const columns = [
   { key: "actions", label: "Actions" },
 ];
 
-// Data with nested properties
 const rows = [
   {
     id: 1,

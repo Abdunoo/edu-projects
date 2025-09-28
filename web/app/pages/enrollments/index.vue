@@ -9,8 +9,7 @@ import { FC } from "~~/utils/filters";
 import type { IEnrollment } from "~~/schemas/enrollment.schema";
 import { ENDPOINTS } from "~~/utils/constant";
 import { formatDateTime } from "~~/utils/functions";
-
-useHead({ title: "Enrollments" });
+import { Permission } from "~~/types/permissions";
 
 const { $api } = useNuxtApp();
 const toast = useCustomToast();
@@ -41,7 +40,6 @@ const table = useDataTable<IEnrollment>({
   },
 });
 
-// Filters
 const studentQuery = ref<string>("");
 const classQuery = ref<string>("");
 
@@ -126,7 +124,7 @@ const handleDelete = (row: IEnrollment) => {
         </h1>
         <p class="text-gray-600">Manage student enrollments to classes</p>
       </div>
-      <NuxtLink to="/enrollments/create">
+      <NuxtLink v-can="Permission.ENROLLMENT_CREATE" to="/enrollments/create">
         <span
           class="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/50"
         >
@@ -179,6 +177,7 @@ const handleDelete = (row: IEnrollment) => {
       <template #cell:actions="{ row }">
         <div class="flex items-center space-x-2">
           <NuxtLink
+            v-can="Permission.ENROLLMENT_UPDATE"
             :to="`/enrollments/${(row as IEnrollment).id}`"
             class="inline-flex items-center rounded-lg px-2 py-1 text-blue-600 hover:bg-blue-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/30"
             aria-label="Edit"
@@ -186,6 +185,7 @@ const handleDelete = (row: IEnrollment) => {
             <Icon name="i-lucide-pencil" class="h-4 w-4" />
           </NuxtLink>
           <button
+            v-can="Permission.ENROLLMENT_DELETE"
             type="button"
             class="inline-flex items-center rounded-lg px-2 py-1 text-amber-600 hover:bg-amber-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500/30"
             aria-label="Delete"

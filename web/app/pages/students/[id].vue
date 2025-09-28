@@ -1,127 +1,216 @@
 <template>
-  <div class="page-container">
-    <header class="page-header">
-      <h1 class="page-title">Edit Student</h1>
-      <p class="page-description">Update the student information</p>
-    </header>
-
-    <div class="page-content">
-      <form class="space-y-4 max-w-2xl" @submit.prevent="onSubmit">
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+  <div v-if="loading" class="flex h-full items-center justify-center">
+    <i
+      class="i-lucide-loader-circle text-3xl animate-spin"
+      aria-hidden="true"
+    />
+  </div>
+  <div v-else class="mx-auto max-w-3xl p-6">
+    <!-- Top Card -->
+    <section
+      class="rounded-xl border border-gray-200/60 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900"
+    >
+      <div class="flex items-start justify-between gap-4 p-6">
+        <div class="flex items-center gap-3">
+          <!-- Icon -->
+          <div
+            class="flex h-10 w-10 items-center justify-center rounded-full bg-gray-100 dark:bg-gray-800"
+          >
+            <i
+              class="i-lucide-graduation-cap text-gray-600 dark:text-gray-300"
+              aria-hidden="true"
+            ></i>
+          </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700">ID</label>
-            <input
-              v-model="form.id"
-              type="text"
-              disabled
-              class="mt-1 w-full rounded-md border border-gray-200 bg-gray-50 px-3 py-2 text-gray-600"
-            />
+            <h1 class="text-lg font-semibold">Edit Student</h1>
+            <p class="text-sm text-gray-500 dark:text-gray-400">
+              Update student information.
+            </p>
           </div>
         </div>
 
+        <NuxtLink
+          to="/students"
+          class="inline-flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-200"
+        >
+          <i class="i-lucide-arrow-left text-base" aria-hidden="true"></i>
+          Back to Students
+        </NuxtLink>
+      </div>
+    </section>
+
+    <!-- Form Card -->
+    <section
+      class="mt-4 rounded-xl border border-gray-200/60 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900"
+    >
+      <!-- Header -->
+      <header class="border-b border-gray-100 p-6 dark:border-gray-800">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-base font-medium">Student Details</p>
+            <p class="text-sm text-gray-500 dark:text-gray-400">
+              Update the information below.
+            </p>
+          </div>
+        </div>
+      </header>
+
+      <!-- Form -->
+      <form class="space-y-5 p-6" @submit.prevent="onSubmit">
+        <!-- NISN -->
         <div>
-          <label class="block text-sm font-medium text-gray-700">NISN</label>
+          <label for="nisn" class="mb-1 block text-sm font-medium">NISN</label>
           <input
+            id="nisn"
             v-model="form.nisn"
             type="text"
-            class="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="NISN"
+            class="block w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:border-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-900/10 dark:border-gray-700 dark:bg-gray-950 dark:text-gray-100"
           />
+          <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+            Enter the student's NISN (National Student ID Number)
+          </p>
         </div>
 
+        <!-- Name -->
         <div>
-          <label class="block text-sm font-medium text-gray-700">Name</label>
+          <label for="name" class="mb-1 block text-sm font-medium">Name</label>
           <input
+            id="name"
             v-model="form.name"
             type="text"
-            class="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="Full name"
+            class="block w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:border-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-900/10 dark:border-gray-700 dark:bg-gray-950 dark:text-gray-100"
           />
+          <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+            Enter the student's full name
+          </p>
         </div>
 
+        <!-- Date of Birth -->
         <div>
-          <label class="block text-sm font-medium text-gray-700"
+          <label for="dob" class="mb-1 block text-sm font-medium"
             >Date of Birth</label
           >
           <input
+            id="dob"
             v-model="dobInput"
             type="date"
-            class="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            class="block w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:border-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-900/10 dark:border-gray-700 dark:bg-gray-950 dark:text-gray-100"
           />
+          <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+            Select the student's date of birth
+          </p>
         </div>
 
+        <!-- Guardian Contact -->
         <div>
-          <label class="block text-sm font-medium text-gray-700"
+          <label for="guardianContact" class="mb-1 block text-sm font-medium"
             >Guardian Contact</label
           >
           <input
+            id="guardianContact"
             v-model="form.guardianContact"
             type="text"
-            class="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="Parent/Guardian phone or email"
+            class="block w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:border-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-900/10 dark:border-gray-700 dark:bg-gray-950 dark:text-gray-100"
           />
+          <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+            Enter parent or guardian contact information
+          </p>
         </div>
 
+        <!-- Active -->
         <div class="flex items-center gap-2">
           <input
             id="isActive"
             v-model="form.isActive"
             type="checkbox"
-            class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+            class="h-4 w-4 rounded border-gray-300 text-gray-900 focus:ring-2 focus:ring-gray-900/20 dark:border-gray-700 dark:bg-gray-950"
           />
-          <label for="isActive" class="text-sm text-gray-700">Active</label>
+          <label for="isActive" class="text-sm">Active</label>
         </div>
 
+        <!-- Error list -->
         <div
           v-if="formErrors.length"
-          class="rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-800"
+          class="rounded-lg border border-red-200 bg-red-50/80 p-4 text-red-800 dark:border-red-900/50 dark:bg-red-950/40 dark:text-red-200"
+          role="alert"
+          aria-live="polite"
         >
-          <ul class="list-disc pl-5 space-y-1">
+          <div class="flex items-center gap-2">
+            <i class="i-lucide-triangle-alert" aria-hidden="true"></i>
+            <p class="font-medium">Please fix the following</p>
+          </div>
+          <ul class="mt-2 list-disc space-y-1 pl-5 text-sm">
             <li v-for="(err, idx) in formErrors" :key="idx">
-              {{ err.path || "" }}{{ err.path ? ": " : "" }}{{ err.message }}
+              <span v-if="err.path" class="font-medium">{{ err.path }}:</span>
+              <span> {{ err.message }}</span>
             </li>
           </ul>
         </div>
 
-        <div class="flex items-center gap-3">
+        <!-- Actions -->
+        <div class="flex items-center gap-3 pt-2">
           <button
             type="submit"
+            class="inline-flex items-center gap-2 rounded-lg bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-black/90 focus:outline-none focus:ring-2 focus:ring-gray-900/20 disabled:cursor-not-allowed disabled:opacity-60 dark:bg-white dark:text-gray-900 dark:hover:bg-white/90"
             :disabled="submitting"
-            class="inline-flex items-center rounded-md bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 disabled:opacity-60"
           >
             <span
               v-if="submitting"
-              class="i-lucide-loader-circle mr-2 animate-spin"
+              class="inline-block h-4 w-4 animate-spin rounded-full border-2 border-current border-r-transparent align-[-2px]"
+              aria-hidden="true"
             />
-            Save Changes
+            <i v-else class="i-lucide-check text-base" aria-hidden="true"></i>
+            Update
           </button>
+
           <NuxtLink
             to="/students"
-            class="inline-flex items-center rounded-md border border-gray-300 px-4 py-2 text-gray-700 hover:bg-gray-50"
-            >Cancel</NuxtLink
+            class="inline-flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-900/10 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-200 dark:hover:bg-gray-800"
           >
+            <i class="i-lucide-x text-base" aria-hidden="true"></i>
+            Cancel
+          </NuxtLink>
         </div>
       </form>
-    </div>
+
+      <!-- Footer -->
+      <footer
+        class="border-t border-gray-100 p-6 text-xs text-gray-500 dark:border-gray-800 dark:text-gray-400"
+      >
+        Tip: Make sure to enter accurate contact information for the guardian.
+      </footer>
+    </section>
   </div>
 </template>
 
 <script setup lang="ts">
-import { reactive, ref, computed } from "vue";
-import { useRoute, useRouter } from "#imports";
+import { reactive, ref, computed, onMounted } from "vue";
+import { useRouter, useRoute } from "vue-router";
 import { validateForm } from "~~/utils/validation";
 import { studentSchema, type IStudent } from "~~/schemas/student.schema";
 import type { IBaseApiResponse } from "~~/types/api";
 import { ENDPOINTS } from "~~/utils/constant";
+import { Permission } from "~~/types/permissions";
 
-const route = useRoute();
+definePageMeta({
+  requiresAuth: true,
+  permissionsAny: [Permission.STUDENT_UPDATE],
+});
+
 const router = useRouter();
+const route = useRoute();
 const { $api } = useNuxtApp();
 const toast = useCustomToast();
 
+const studentId = computed(() => route.params.id as string);
+const loading = ref(true);
 const submitting = ref(false);
 const formErrors = ref<Array<{ path?: string; message: string }>>([]);
 
+// Form state
 const form = reactive<IStudent>({
   id: "",
   nisn: "",
@@ -131,35 +220,6 @@ const form = reactive<IStudent>({
   isActive: true,
   createdAt: undefined,
   updatedAt: undefined,
-});
-
-const studentId = route.params.id as string;
-
-// Fetch student
-let studentData: IStudent | null = null;
-let studentError: unknown = null;
-try {
-  const { data } = await $api<IBaseApiResponse<IStudent>>(
-    `${ENDPOINTS.STUDENTS.BASE}/${studentId}`,
-    { method: "GET" },
-  );
-  studentData = data;
-  studentData.dob = new Date(studentData.dob);
-} catch (e) {
-  studentError = e;
-}
-
-// Initialize form after data resolves
-if (studentError) {
-  toast.error("Failed to load student");
-  router.push("/students");
-} else if (studentData) {
-  Object.assign(form, studentData);
-}
-
-const editStudentSchema = studentSchema.partial({
-  createdAt: true,
-  updatedAt: true,
 });
 
 // Helper to bind date to input type="date"
@@ -174,11 +234,52 @@ const dobInput = computed<string>({
   },
 });
 
+// Build the schema for update (id/createdAt/updatedAt optional)
+const updateStudentSchema = studentSchema.partial({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+// Fetch student data
+const fetchStudentData = async () => {
+  try {
+    loading.value = true;
+    const response = await $api<IBaseApiResponse<IStudent>>(
+      `${ENDPOINTS.STUDENTS.BASE}/${studentId.value}`,
+      { method: "GET" },
+    );
+
+    const studentData = response.data;
+
+    // Populate the form with student data
+    form.id = studentData.id;
+    form.nisn = studentData.nisn;
+    form.name = studentData.name;
+    form.dob = new Date(studentData.dob);
+    form.guardianContact = studentData.guardianContact;
+    form.isActive = studentData.isActive;
+  } catch (err: unknown) {
+    const message =
+      (err as { data?: { message?: string } })?.data?.message ||
+      "Failed to fetch student data";
+    toast.error(message);
+    router.back();
+  } finally {
+    loading.value = false;
+  }
+};
+
+// Load data on component mount
+onMounted(async () => {
+  await fetchStudentData();
+});
+
 const onSubmit = async () => {
   formErrors.value = [];
   submitting.value = true;
   try {
-    const { success, data, errors } = validateForm(editStudentSchema, form);
+    const { success, data, errors } = validateForm(updateStudentSchema, form);
     if (!success) {
       formErrors.value =
         (errors as Array<{ path?: string; message: string }>) || [];
@@ -194,7 +295,7 @@ const onSubmit = async () => {
     };
 
     await $api<IBaseApiResponse<IStudent>>(
-      `${ENDPOINTS.STUDENTS.BASE}/${studentId}`,
+      `${ENDPOINTS.STUDENTS.BASE}/${studentId.value}`,
       {
         method: "PUT",
         body: payload,
@@ -202,7 +303,7 @@ const onSubmit = async () => {
     );
 
     toast.success("Student updated successfully");
-    router.push("/students");
+    router.back();
   } catch (err: unknown) {
     const message =
       (err as { data?: { message?: string } })?.data?.message ||
@@ -213,3 +314,7 @@ const onSubmit = async () => {
   }
 };
 </script>
+
+<style scoped>
+/* No custom styles needed; Tailwind handles layout & states. */
+</style>

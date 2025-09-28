@@ -87,6 +87,4 @@ async function onSubmit() {
     loading.value = false;
   }
 }
-
-useHead({ title: "Login" });
 </script>

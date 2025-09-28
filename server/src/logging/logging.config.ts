@@ -13,7 +13,6 @@ if (!fs.existsSync(logDir)) {
 const isDev = process.env.NODE_ENV === 'development';
 
 export const loggingConfig: WinstonModuleOptions = {
-  level: isDev ? 'debug' : 'debug', // Keep debug as base; transport levels will gate outputs
   transports: [
     // Console transport - shows all levels with colors
     new winston.transports.Console({

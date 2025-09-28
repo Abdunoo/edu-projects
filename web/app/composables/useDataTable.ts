@@ -99,7 +99,6 @@ export function useDataTable<T>(params: {
   );
 
   return {
-    // state
     page,
     perPage,
     totalRows,
@@ -110,7 +109,6 @@ export function useDataTable<T>(params: {
     joinOperator,
     sort,
     payload,
-    // actions
     load,
     setPage,
     setPerPage,

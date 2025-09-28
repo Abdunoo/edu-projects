@@ -189,11 +189,16 @@
 <script setup lang="ts">
 import { reactive, ref, computed } from "vue";
 import { useRouter } from "vue-router";
-
 import { validateForm } from "~~/utils/validation";
 import { userSchema, type IUser, type IRole } from "~~/schemas/user.schema";
 import type { IBaseApiResponse, IPaginatedData } from "~~/types/api";
 import { ENDPOINTS } from "~~/utils/constant";
+import { Permission } from "~~/types/permissions";
+
+definePageMeta({
+  requiresAuth: true,
+  permissionsAny: [Permission.USER_CREATE],
+});
 
 const router = useRouter();
 const { $api } = useNuxtApp();
@@ -294,7 +299,7 @@ const onSubmit = async () => {
       },
     ]);
 
-    router.push("/users");
+    router.back();
   } catch (err: unknown) {
     const message =
       (err as { data?: { message?: string } })?.data?.message ||

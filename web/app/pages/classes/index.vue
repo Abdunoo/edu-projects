@@ -9,8 +9,7 @@ import { FC } from "~~/utils/filters";
 import type { IClass } from "~~/schemas/class.schema";
 import { ENDPOINTS } from "~~/utils/constant";
 import { formatDateTime } from "../../../utils/functions";
-
-useHead({ title: "Classes" });
+import { Permission } from "~~/types/permissions";
 
 const { $api } = useNuxtApp();
 const toast = useCustomToast();
@@ -36,7 +35,6 @@ const table = useDataTable<IClass>({
   },
 });
 
-// Filters
 const nameQuery = ref<string>("");
 const yearQuery = ref<string>("");
 
@@ -54,7 +52,6 @@ function clearFilters() {
   yearQuery.value = "";
 }
 
-// Columns
 const columns = [
   {
     key: "id",
@@ -91,7 +88,6 @@ const columns = [
   },
 ];
 
-// Events
 const handlePageChange = (page: number) => table.setPage(page);
 const handlePerPageChange = (perPage: number) => table.setPerPage(perPage);
 const handleSort = (payload: {
@@ -100,7 +96,7 @@ const handleSort = (payload: {
 }) => table.setSortFromSingle(payload);
 
 const handleDelete = (row: IClass) => {
-  toast.success(`Class ${row.name} deleted (mock)`); // Implement delete API when available
+  toast.success(`Class ${row.name} deleted (mock)`);
 };
 </script>
 
@@ -116,7 +112,7 @@ const handleDelete = (row: IClass) => {
         </h1>
         <p class="text-gray-600">Manage your classes</p>
       </div>
-      <NuxtLink to="/classes/create">
+      <NuxtLink v-can="Permission.CLASS_CREATE" to="/classes/create">
         <span
           class="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/50"
         >
@@ -165,6 +161,7 @@ const handleDelete = (row: IClass) => {
       <template #cell:actions="{ row }">
         <div class="flex items-center space-x-2">
           <NuxtLink
+            v-can="Permission.CLASS_UPDATE"
             :to="`/classes/${(row as IClass).id}`"
             class="inline-flex items-center rounded-lg px-2 py-1 text-blue-600 hover:bg-blue-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/30"
             aria-label="Edit"
@@ -172,6 +169,7 @@ const handleDelete = (row: IClass) => {
             <Icon name="i-lucide-pencil" class="h-4 w-4" />
           </NuxtLink>
           <button
+            v-can="Permission.CLASS_DELETE"
             type="button"
             class="inline-flex items-center rounded-lg px-2 py-1 text-amber-600 hover:bg-amber-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500/30"
             aria-label="Delete"

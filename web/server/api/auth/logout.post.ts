@@ -11,5 +11,15 @@ export default defineEventHandler((event) => {
     path: "/",
     maxAge: 0,
   });
+  setCookie(event, STORAGE_KEYS.CSRF_TOKEN, "", {
+    httpOnly: true,
+    path: "/",
+    maxAge: 0,
+  });
+  setCookie(event, STORAGE_KEYS.USER, "", {
+    httpOnly: true,
+    path: "/",
+    maxAge: 0,
+  });
   return { ok: true };
 });

@@ -80,7 +80,6 @@ export const ROLE_PERMISSIONS = {
     Permission.GRADE_DELETE,
   ],
   teacher: [
-    Permission.USER_READ,
     Permission.PROFILE_READ,
     Permission.PROFILE_UPDATE,
     Permission.STUDENT_READ,

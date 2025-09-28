@@ -101,7 +101,6 @@ export function useTable<T>(params: {
     URL.revokeObjectURL(url);
   }
 
-  // auto-load when params change
   watch(
     [
       page,

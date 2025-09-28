@@ -9,8 +9,7 @@ import { FC } from "~~/utils/filters";
 import type { IGrade } from "~~/schemas/grade.schema";
 import { ENDPOINTS } from "~~/utils/constant";
 import { formatDateTime } from "~~/utils/functions";
-
-useHead({ title: "Grades" });
+import { Permission } from "~~/types/permissions";
 
 const { $api } = useNuxtApp();
 const toast = useCustomToast();
@@ -37,14 +36,14 @@ const table = useDataTable<IGrade>({
 });
 
 // Filters
-const studentIdQuery = ref<string>("");
+const studentQuery = ref<string>("");
 const subjectQuery = ref<string>("");
 const termQuery = ref<string>("");
 
-watch([studentIdQuery, subjectQuery, termQuery], () => {
+watch([studentQuery, subjectQuery, termQuery], () => {
   const filters: FilterCondition[] = [];
-  if (studentIdQuery.value?.trim())
-    filters.push(FC.text("studentId", studentIdQuery.value.trim(), "eq"));
+  if (studentQuery.value?.trim())
+    filters.push(FC.text("studentId", studentQuery.value.trim(), "eq"));
   if (subjectQuery.value?.trim())
     filters.push(FC.text("subject", subjectQuery.value.trim(), "iLike"));
   if (termQuery.value?.trim())
@@ -53,7 +52,7 @@ watch([studentIdQuery, subjectQuery, termQuery], () => {
 });
 
 function clearFilters() {
-  studentIdQuery.value = "";
+  studentQuery.value = "";
   subjectQuery.value = "";
   termQuery.value = "";
 }
@@ -61,7 +60,7 @@ function clearFilters() {
 // Columns
 const columns = [
   {
-    key: "studentId",
+    key: "student.name",
     label: "STUDENT",
     sortable: true,
   },
@@ -125,7 +124,7 @@ const handleDelete = (row: IGrade) => {
         </h1>
         <p class="text-gray-600">Manage students' grades</p>
       </div>
-      <NuxtLink to="/grades/create">
+      <NuxtLink v-can="Permission.GRADE_CREATE" to="/grades/create">
         <span
           class="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/50"
         >
@@ -150,9 +149,9 @@ const handleDelete = (row: IGrade) => {
       <template #toolbar>
         <div class="flex items-center gap-2">
           <input
-            v-model="studentIdQuery"
+            v-model="studentQuery"
             type="text"
-            placeholder="Student ID"
+            placeholder="Student"
             class="w-40 rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-800 placeholder:text-zinc-400 focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500/30"
           />
           <input
@@ -180,6 +179,7 @@ const handleDelete = (row: IGrade) => {
       <template #cell:actions="{ row }">
         <div class="flex items-center space-x-2">
           <NuxtLink
+            v-can="Permission.GRADE_UPDATE"
             :to="`/grades/${(row as IGrade).id}`"
             class="inline-flex items-center rounded-lg px-2 py-1 text-blue-600 hover:bg-blue-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/30"
             aria-label="Edit"
@@ -187,6 +187,7 @@ const handleDelete = (row: IGrade) => {
             <Icon name="i-lucide-pencil" class="h-4 w-4" />
           </NuxtLink>
           <button
+            v-can="Permission.GRADE_DELETE"
             type="button"
             class="inline-flex items-center rounded-lg px-2 py-1 text-amber-600 hover:bg-amber-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500/30"
             aria-label="Delete"

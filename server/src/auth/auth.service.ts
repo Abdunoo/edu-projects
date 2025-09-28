@@ -19,6 +19,7 @@ import { ConfigService } from '@nestjs/config';
 import { DbSchema } from '@/database/schema';
 import { users } from '@/database/schema/users';
 import { refreshTokens } from '@/database/schema/refresh-tokens';
+import { ResetPasswordDto } from './dto/reset-password.dto';
 
 @Injectable()
 export class AuthService {

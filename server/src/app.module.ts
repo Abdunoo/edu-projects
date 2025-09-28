@@ -11,6 +11,7 @@ import { RolesModule } from './modules/roles/roles.module';
 import { ClassesModule } from './modules/classes/classes.module';
 import { EnrollmentsModule } from './modules/enrollments/enrollments.module';
 import { GradesModule } from './modules/grades/grades.module';
+import { DashboardModule } from './modules/dashboard/dashboard.module';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { GradesModule } from './modules/grades/grades.module';
     ClassesModule,
     EnrollmentsModule,
     GradesModule,
+    DashboardModule,
   ],
   providers: [
     {

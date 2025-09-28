@@ -15,12 +15,14 @@ import { PaginationDto } from '@/common/types/pagination.dto';
 import { PaginationResponse } from '@/common/types/pagination-response.type';
 import { filterColumns, generateOrderBy } from '@/common/utils/filter-columns';
 import { exportCsvUtil } from '@/common/utils/function.util';
+import { DashboardGateway } from '@/modules/dashboard/dashboard.gateway';
 
 @Injectable()
 export class GradesService {
   constructor(
     @Inject(DATABASE_CONNECTION)
     private readonly db: NodePgDatabase<DbSchema>,
+    private readonly dashboardGateway: DashboardGateway,
   ) {}
 
   async create(dto: CreateGradeDto) {
@@ -34,6 +36,8 @@ export class GradesService {
           score: String(dto.score),
         })
         .returning();
+
+      this.dashboardGateway.triggerDashboardUpdate();
       return {
         statusCode: HttpStatus.OK,
         message: 'Berhasil menambahkan nilai',
@@ -159,6 +163,8 @@ export class GradesService {
         .set(updateData)
         .where(eq(grades.id, id))
         .returning();
+
+      this.dashboardGateway.triggerDashboardUpdate();
       return {
         statusCode: HttpStatus.OK,
         message: 'Berhasil mengupdate nilai',
@@ -172,6 +178,8 @@ export class GradesService {
   async remove(id: number) {
     const row = await this.findOne(id);
     await this.db.delete(grades).where(eq(grades.id, id));
+
+    this.dashboardGateway.triggerDashboardUpdate();
     return {
       statusCode: HttpStatus.OK,
       message: 'Berhasil menghapus nilai',
