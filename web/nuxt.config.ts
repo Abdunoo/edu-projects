@@ -11,12 +11,12 @@ export default defineNuxtConfig({
   css: ["~/assets/css/main.css"],
 
   runtimeConfig: {
-    private: {
-      apiBase: process.env.API_BASE ?? "http://localhost:3001/api", // Nest origin
-    },
+    // Server-side only (private)
+    apiBase: process.env.NUXT_API_BASE ?? "http://localhost:3001/api",
+    // Client-side (public)
     public: {
-      apiBase: process.env.PUBLIC_API_BASE ?? "http://localhost:3001", // for direct calls
-      wsUrl: process.env.WS_URL ?? "ws://localhost:3001/dashboard", // WebSocket URL
+      apiBase: process.env.NUXT_PUBLIC_API_BASE ?? "http://localhost:3001",
+      wsUrl: process.env.NUXT_PUBLIC_WS_URL ?? "ws://localhost:3001/dashboard",
     },
   },
 
