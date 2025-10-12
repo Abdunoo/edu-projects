@@ -18,14 +18,14 @@ import {
   UpdateClassDto,
   updateClassSchema,
 } from './classes.dto';
-import { ZodValidationPipe } from '@/common/pipes/zod-validation.pipe';
+import { ZodValidationPipe } from '../../common/pipes/zod-validation.pipe';
 import { createClassSchema } from './classes.dto';
-import { JwtAuthGuard } from '@/auth/jwt/jwt.guard';
-import { PermissionsGuard } from '@/auth/guards/permissions.guard';
-import { RequirePermissions } from '@/auth/decorators/permissions.decorator';
-import { Permission } from '@/modules/permissions/permissions.enum';
-import { CsrfGuard } from '@/auth/guards/csrf.guard';
-import { PaginationDto, paginationSchema } from '@/common/types/pagination.dto';
+import { JwtAuthGuard } from '../../auth/jwt/jwt.guard';
+import { PermissionsGuard } from '../../auth/guards/permissions.guard';
+import { RequirePermissions } from '../../auth/decorators/permissions.decorator';
+import { Permission } from '../../modules/permissions/permissions.enum';
+import { CsrfGuard } from '../../auth/guards/csrf.guard';
+import { PaginationDto, paginationSchema } from '../../common/types/pagination.dto';
 import { ClassesService } from './classes.service';
 
 @Controller('classes')

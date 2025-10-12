@@ -7,13 +7,13 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { NodePgDatabase } from 'drizzle-orm/node-postgres';
-import { DATABASE_CONNECTION } from '@/database/database.module';
-import { DbSchema, roles, Role } from '@/database/schema';
+import { DATABASE_CONNECTION } from '../../database/database.module';
+import { DbSchema, roles, Role } from '../../database/schema';
 import { eq, sql } from 'drizzle-orm';
 import type { CreateRoleDto, UpdateRoleDto } from './roles.dto';
-import { PaginationDto } from '@/common/types/pagination.dto';
-import { PaginationResponse } from '@/common/types/pagination-response.type';
-import { filterColumns, generateOrderBy } from '@/common/utils/filter-columns';
+import { PaginationDto } from '../../common/types/pagination.dto';
+import { PaginationResponse } from '../../common/types/pagination-response.type';
+import { filterColumns, generateOrderBy } from '../../common/utils/filter-columns';
 import { DashboardGateway } from '../dashboard/dashboard.gateway';
 
 @Injectable()

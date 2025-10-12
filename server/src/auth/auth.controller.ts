@@ -21,10 +21,10 @@ import {
   loginSchema,
   updateProfileSchema,
 } from './zod/auth.schema';
-import { ZodValidationPipe } from '@/common/pipes/zod-validation.pipe';
-import { RequirePermissions } from '@/auth/decorators/permissions.decorator';
-import { Permission } from '@/modules/permissions/permissions.enum';
-import { JwtAuthGuard } from '@/auth/jwt/jwt.guard';
+import { ZodValidationPipe } from '../common/pipes/zod-validation.pipe';
+import { RequirePermissions } from '../auth/decorators/permissions.decorator';
+import { Permission } from '../modules/permissions/permissions.enum';
+import { JwtAuthGuard } from '../auth/jwt/jwt.guard';
 import { PermissionsGuard } from './guards/permissions.guard';
 
 @Controller('auth')

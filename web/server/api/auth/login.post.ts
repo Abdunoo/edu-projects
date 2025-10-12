@@ -4,9 +4,7 @@ import type { IBaseApiResponse } from "~~/types/api";
 
 export default defineEventHandler(async (event) => {
   const body = await readBody<IAuthLoginRequest>(event);
-  const {
-    private: { apiBase },
-  } = useRuntimeConfig();
+  const { apiBase } = useRuntimeConfig();
 
   const { data } = await $fetch<IBaseApiResponse<IAuthLogin>>(
     ENDPOINTS.AUTH.PRIVATE.LOGIN,

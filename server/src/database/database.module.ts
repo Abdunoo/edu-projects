@@ -2,7 +2,7 @@ import { Module, Global } from '@nestjs/common';
 import { drizzle } from 'drizzle-orm/node-postgres';
 import { Client } from 'pg';
 import { ConfigService } from '@nestjs/config';
-import * as schema from '@/database/schema';
+import * as schema from './schema';
 import { LoggerService } from '@nestjs/common';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 

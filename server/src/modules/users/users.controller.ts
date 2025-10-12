@@ -14,20 +14,20 @@ import {
   Res,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { JwtAuthGuard } from '@/auth/jwt/jwt.guard';
-import { PermissionsGuard } from '@/auth/guards/permissions.guard';
-import { RequirePermissions } from '@/auth/decorators/permissions.decorator';
+import { JwtAuthGuard } from '../../auth/jwt/jwt.guard';
+import { PermissionsGuard } from '../../auth/guards/permissions.guard';
+import { RequirePermissions } from '../../auth/decorators/permissions.decorator';
 import type { CreateUserDto, UpdateUserDto } from './users.dto';
-import { Permission } from '@/modules/permissions/permissions.enum';
-import { PaginationDto, paginationSchema } from '@/common/types/pagination.dto';
-import { ZodValidationPipe } from '@/common/pipes/zod-validation.pipe';
+import { Permission } from '../../modules/permissions/permissions.enum';
+import { PaginationDto, paginationSchema } from '../../common/types/pagination.dto';
+import { ZodValidationPipe } from '../../common/pipes/zod-validation.pipe';
 import { createUserSchema, updateUserSchema } from './users.dto';
-import { CsrfGuard } from '@/auth/guards/csrf.guard';
+import { CsrfGuard } from '../../auth/guards/csrf.guard';
 import { Response } from 'express';
 import {
   ResetPasswordDto,
   resetPasswordSchema,
-} from '@/auth/dto/reset-password.dto';
+} from '../../auth/dto/reset-password.dto';
 
 @Controller('users')
 @UseGuards(JwtAuthGuard, PermissionsGuard)

@@ -28,12 +28,27 @@ async function bootstrap() {
   app.useGlobalFilters(new HttpExceptionFilter());
 
   // CORS configuration
-  app.enableCors({
-    origin: ['http://localhost:3000', 'http://localhost:3001'],
+  const allowedOrigins = [
+    'http://localhost:3000',
+    'http://localhost:3001',
+    process.env.FRONTEND_URL,
+  ].filter(Boolean);
+  
+  // Allow Vercel preview and production URLs
+  const corsOptions = {
+    origin: (origin: string, callback: (err: Error | null, allow?: boolean) => void) => {
+      if (!origin || allowedOrigins.includes(origin) || origin.endsWith('.vercel.app')) {
+        callback(null, true);
+      } else {
+        callback(null, false);
+      }
+    },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'x-csrf-token'],
-  });
+  };
+  
+  app.enableCors(corsOptions);
 
   // Cookie parser for reading JWT and CSRF cookies
   app.use(cookieParser());

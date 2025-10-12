@@ -14,11 +14,11 @@ import type { LoginDto } from './dto/login.dto';
 import type { RegisterDto } from './dto/register.dto';
 import type { UpdateProfileDto } from './dto/update-profile.dto';
 import { DATABASE_CONNECTION } from '../database/database.module';
-import { ROLE_IDS, UserRole } from '@/modules/roles/roles.enum';
+import { ROLE_IDS, UserRole } from '../modules/roles/roles.enum';
 import { ConfigService } from '@nestjs/config';
-import { DbSchema } from '@/database/schema';
-import { users } from '@/database/schema/users';
-import { refreshTokens } from '@/database/schema/refresh-tokens';
+import { DbSchema } from '../database/schema';
+import { users } from '../database/schema/users';
+import { refreshTokens } from '../database/schema/refresh-tokens';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 
 @Injectable()

@@ -1,0 +1,67 @@
+DEPLOYMENT INFORMATION
+======================
+
+Generated JWT Secrets (SAVE THESE):
+-----------------------------------
+JWT_SECRET=c4f12252800c174649dc07c9ed700f1de5c2fb482ccac1408043b475860d44be
+JWT_REFRESH_SECRET=8dc1a3ae26a8c829bbd9ff5e109162a73999ae90211172d4445e1024fbdbbfa3
+JWT_EXPIRES_IN=15m
+JWT_REFRESH_EXPIRES_IN=7d
+PORT=3001
+
+Vercel Account:
+---------------
+Username: abdundev-9891
+
+DEPLOYMENT STEPS:
+=================
+
+1. DEPLOY BACKEND
+-----------------
+cd server
+vercel --prod
+
+After deployment, set environment variables:
+vercel env add DATABASE_URL
+vercel env add JWT_SECRET
+vercel env add JWT_REFRESH_SECRET
+vercel env add JWT_EXPIRES_IN
+vercel env add JWT_REFRESH_EXPIRES_IN
+vercel env add PORT
+
+Then redeploy: vercel --prod
+
+2. RUN MIGRATIONS
+-----------------
+export DATABASE_URL="your-production-database-url"
+npm run db:push
+npm run db:seed
+
+3. DEPLOY FRONTEND
+------------------
+cd ../web
+vercel --prod
+
+Set environment variables (use your backend URL):
+vercel env add NUXT_PUBLIC_API_BASE
+vercel env add NUXT_API_BASE
+vercel env add NUXT_PUBLIC_WS_URL
+
+Then redeploy: vercel --prod
+
+4. UPDATE BACKEND CORS
+-----------------------
+cd ../server
+vercel env add FRONTEND_URL
+vercel --prod
+
+URLS TO SAVE:
+=============
+Backend URL: ___________________________________
+Frontend URL: ___________________________________
+Database URL: ___________________________________
+
+Default Login:
+==============
+Email: admin@example.com
+Password: admin123

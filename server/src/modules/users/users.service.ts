@@ -7,25 +7,25 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { NodePgDatabase } from 'drizzle-orm/node-postgres';
-import { DATABASE_CONNECTION } from '@/database/database.module';
+import { DATABASE_CONNECTION } from '../../database/database.module';
 import { aliasedTable, eq, sql } from 'drizzle-orm';
 import * as bcrypt from 'bcrypt';
 import { ROLE_IDS } from '../roles/roles.enum';
-import { DbSchema, roles } from '@/database/schema';
+import { DbSchema, roles } from '../../database/schema';
 import {
   users,
   User,
   UserWithRole,
   UserListItem,
-} from '@/database/schema/users';
-import { Filter, PaginationDto } from '@/common/types/pagination.dto';
-import { PaginationResponse } from '@/common/types/pagination-response.type';
-import { filterColumns, generateOrderBy } from '@/common/utils/filter-columns';
-import { handleServiceErrors } from '@/common/utils/error-handler';
+} from '../../database/schema/users';
+import { Filter, PaginationDto } from '../../common/types/pagination.dto';
+import { PaginationResponse } from '../../common/types/pagination-response.type';
+import { filterColumns, generateOrderBy } from '../../common/utils/filter-columns';
+import { handleServiceErrors } from '../../common/utils/error-handler';
 import { Logger } from 'winston';
 import { CreateUserDto, UpdateUserDto } from './users.dto';
-import { DashboardGateway } from '@/modules/dashboard/dashboard.gateway';
-import { ResetPasswordDto } from '@/auth/dto/reset-password.dto';
+import { DashboardGateway } from '../../modules/dashboard/dashboard.gateway';
+import { ResetPasswordDto } from '../../auth/dto/reset-password.dto';
 
 @Injectable()
 export class UsersService {

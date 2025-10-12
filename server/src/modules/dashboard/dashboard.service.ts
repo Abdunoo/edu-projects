@@ -14,17 +14,17 @@ import {
   IEnrollment,
 } from './dashboard.dto';
 import { NodePgDatabase } from 'drizzle-orm/node-postgres';
-import { DATABASE_CONNECTION } from '@/database/database.module';
-import { DbSchema } from '@/database/schema';
-import { students } from '@/database/schema/students';
-import { classes } from '@/database/schema/classes';
-import { grades } from '@/database/schema/grades';
-import { enrollments } from '@/database/schema/enrollments';
-import { users } from '@/database/schema/users';
-import { auditLog } from '@/database/schema/audit-log';
+import { DATABASE_CONNECTION } from '../../database/database.module';
+import { DbSchema } from '../../database/schema';
+import { students } from '../../database/schema/students';
+import { classes } from '../../database/schema/classes';
+import { grades } from '../../database/schema/grades';
+import { enrollments } from '../../database/schema/enrollments';
+import { users } from '../../database/schema/users';
+import { auditLog } from '../../database/schema/audit-log';
 import { count, desc, eq, sql } from 'drizzle-orm';
 import { Logger } from 'winston';
-import { handleServiceErrors } from '@/common/utils/error-handler';
+import { handleServiceErrors } from '../../common/utils/error-handler';
 
 @Injectable()
 export class DashboardService {

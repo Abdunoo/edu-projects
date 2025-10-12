@@ -6,9 +6,7 @@ import { ENDPOINTS, STORAGE_KEYS } from "~~/utils/constant";
 const COOKIE_BASE = { httpOnly: true, sameSite: "lax" as const, path: "/" };
 
 async function refreshAccessToken(event: H3Event) {
-  const {
-    private: { apiBase },
-  } = useRuntimeConfig();
+  const { apiBase } = useRuntimeConfig();
   const refresh = getCookie(event, STORAGE_KEYS.REFRESH_TOKEN);
   if (!refresh)
     throw createError({ statusCode: 401, statusMessage: "No refresh token" });
@@ -34,9 +32,7 @@ async function refreshAccessToken(event: H3Event) {
 }
 
 async function getCsrfToken() {
-  const {
-    private: { apiBase },
-  } = useRuntimeConfig();
+  const { apiBase } = useRuntimeConfig();
   const csrf = await $fetch<IBaseApiResponse<string>>(
     ENDPOINTS.AUTH.PRIVATE.CSRF,
     { baseURL: apiBase, method: "GET" },
@@ -56,9 +52,7 @@ export async function callNestWithBearer<T = unknown>(
   path: string,
   init: Init = {},
 ): Promise<T> {
-  const {
-    private: { apiBase },
-  } = useRuntimeConfig();
+  const { apiBase } = useRuntimeConfig();
   let access = getCookie(event, STORAGE_KEYS.ACCESS_TOKEN);
 
   const attempt = (token: string, csrfOverride?: string) => {

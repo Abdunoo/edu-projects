@@ -14,16 +14,16 @@ import {
 } from '@nestjs/common';
 import { Response } from 'express';
 import { StudentsService } from './students.service';
-import { JwtAuthGuard } from '@/auth/jwt/jwt.guard';
-import { PermissionsGuard } from '@/auth/guards/permissions.guard';
-import { RequirePermissions } from '@/auth/decorators/permissions.decorator';
-import { Permission } from '@/modules/permissions/permissions.enum';
+import { JwtAuthGuard } from '../../auth/jwt/jwt.guard';
+import { PermissionsGuard } from '../../auth/guards/permissions.guard';
+import { RequirePermissions } from '../../auth/decorators/permissions.decorator';
+import { Permission } from '../../modules/permissions/permissions.enum';
 import { CreateStudentDto } from './students.dto';
 import { UpdateStudentDto } from './students.dto';
-import { ZodValidationPipe } from '@/common/pipes/zod-validation.pipe';
+import { ZodValidationPipe } from '../../common/pipes/zod-validation.pipe';
 import { createStudentSchema, updateStudentSchema } from './students.dto';
-import { PaginationDto, paginationSchema } from '@/common/types/pagination.dto';
-import { CsrfGuard } from '@/auth/guards/csrf.guard';
+import { PaginationDto, paginationSchema } from '../../common/types/pagination.dto';
+import { CsrfGuard } from '../../auth/guards/csrf.guard';
 
 @Controller('students')
 @UseGuards(JwtAuthGuard, PermissionsGuard)

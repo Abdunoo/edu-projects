@@ -8,9 +8,9 @@ import { JwtStrategy } from './jwt/jwt.strategy';
 import { RolesGuard } from './guards/roles.guard';
 import { PermissionsGuard } from './guards/permissions.guard';
 import { CsrfGuard } from './guards/csrf.guard';
-import { UsersModule } from '@/modules/users/users.module';
-import { DatabaseModule } from '@/database/database.module';
-import { LoggingModule } from '@/logging/logging.module';
+import { UsersModule } from '../modules/users/users.module';
+import { DatabaseModule } from '../database/database.module';
+import { LoggingModule } from '../logging/logging.module';
 
 @Module({
   imports: [

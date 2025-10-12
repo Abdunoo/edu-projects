@@ -1,0 +1,40 @@
+FRONTEND ENVIRONMENT VARIABLES SETUP
+====================================
+
+Your Backend URL: https://edu-project-server.vercel.app
+
+Run these commands in the web directory:
+==========================================
+
+cd web
+
+# Set NUXT_PUBLIC_API_BASE
+vercel env add NUXT_PUBLIC_API_BASE
+# Enter: https://edu-project-server.vercel.app
+# Select: Production
+
+# Set NUXT_API_BASE  
+vercel env add NUXT_API_BASE
+# Enter: https://edu-project-server.vercel.app/api
+# Select: Production
+
+# Set NUXT_PUBLIC_WS_URL
+vercel env add NUXT_PUBLIC_WS_URL
+# Enter: wss://edu-project-server.vercel.app/dashboard
+# Select: Production
+
+# Redeploy frontend
+vercel --prod
+
+THEN UPDATE BACKEND CORS:
+==========================
+
+cd ../server
+
+# Set FRONTEND_URL
+vercel env add FRONTEND_URL
+# Enter: https://edu-project-web.vercel.app
+# Select: Production
+
+# Redeploy backend
+vercel --prod

@@ -6,16 +6,16 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { NodePgDatabase } from 'drizzle-orm/node-postgres';
-import { DATABASE_CONNECTION } from '@/database/database.module';
-import { DbSchema, students } from '@/database/schema';
-import { grades } from '@/database/schema/grades';
+import { DATABASE_CONNECTION } from '../../database/database.module';
+import { DbSchema, students } from '../../database/schema';
+import { grades } from '../../database/schema/grades';
 import { eq, sql } from 'drizzle-orm';
 import { CreateGradeDto, UpdateGradeDto } from './grades.dto';
-import { PaginationDto } from '@/common/types/pagination.dto';
-import { PaginationResponse } from '@/common/types/pagination-response.type';
-import { filterColumns, generateOrderBy } from '@/common/utils/filter-columns';
-import { exportCsvUtil } from '@/common/utils/function.util';
-import { DashboardGateway } from '@/modules/dashboard/dashboard.gateway';
+import { PaginationDto } from '../../common/types/pagination.dto';
+import { PaginationResponse } from '../../common/types/pagination-response.type';
+import { filterColumns, generateOrderBy } from '../../common/utils/filter-columns';
+import { exportCsvUtil } from '../../common/utils/function.util';
+import { DashboardGateway } from '../../modules/dashboard/dashboard.gateway';
 
 @Injectable()
 export class GradesService {

@@ -14,19 +14,19 @@ import {
 } from '@nestjs/common';
 import { Response } from 'express';
 import { GradesService } from './grades.service';
-import { JwtAuthGuard } from '@/auth/jwt/jwt.guard';
-import { PermissionsGuard } from '@/auth/guards/permissions.guard';
-import { RequirePermissions } from '@/auth/decorators/permissions.decorator';
-import { Permission } from '@/modules/permissions/permissions.enum';
-import { ZodValidationPipe } from '@/common/pipes/zod-validation.pipe';
+import { JwtAuthGuard } from '../../auth/jwt/jwt.guard';
+import { PermissionsGuard } from '../../auth/guards/permissions.guard';
+import { RequirePermissions } from '../../auth/decorators/permissions.decorator';
+import { Permission } from '../../modules/permissions/permissions.enum';
+import { ZodValidationPipe } from '../../common/pipes/zod-validation.pipe';
 import {
   CreateGradeDto,
   UpdateGradeDto,
   createGradeSchema,
   updateGradeSchema,
 } from './grades.dto';
-import { PaginationDto, paginationSchema } from '@/common/types/pagination.dto';
-import { CsrfGuard } from '@/auth/guards/csrf.guard';
+import { PaginationDto, paginationSchema } from '../../common/types/pagination.dto';
+import { CsrfGuard } from '../../auth/guards/csrf.guard';
 
 @Controller('grades')
 @UseGuards(JwtAuthGuard, PermissionsGuard)

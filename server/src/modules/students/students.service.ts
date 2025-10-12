@@ -6,19 +6,19 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { NodePgDatabase } from 'drizzle-orm/node-postgres';
-import { DATABASE_CONNECTION } from '@/database/database.module';
-import { DbSchema } from '@/database/schema';
-import { students } from '@/database/schema/students';
+import { DATABASE_CONNECTION } from '../../database/database.module';
+import { DbSchema } from '../../database/schema';
+import { students } from '../../database/schema/students';
 import { eq, aliasedTable, sql, and } from 'drizzle-orm';
 import { CreateStudentDto } from './students.dto';
 import { UpdateStudentDto } from './students.dto';
-import { PaginationDto } from '@/common/types/pagination.dto';
-import { PaginationResponse } from '@/common/types/pagination-response.type';
-import { filterColumns, generateOrderBy } from '@/common/utils/filter-columns';
-import { exportCsvUtil } from '@/common/utils/function.util';
-import { handleServiceErrors } from '@/common/utils/error-handler';
+import { PaginationDto } from '../../common/types/pagination.dto';
+import { PaginationResponse } from '../../common/types/pagination-response.type';
+import { filterColumns, generateOrderBy } from '../../common/utils/filter-columns';
+import { exportCsvUtil } from '../../common/utils/function.util';
+import { handleServiceErrors } from '../../common/utils/error-handler';
 import { Logger } from 'winston';
-import { DashboardGateway } from '@/modules/dashboard/dashboard.gateway';
+import { DashboardGateway } from '../../modules/dashboard/dashboard.gateway';
 
 @Injectable()
 export class StudentsService {

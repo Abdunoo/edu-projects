@@ -199,9 +199,34 @@ npm run lint
 npm run format
 ```
 
-## 📦 Production Build
+## 📦 Production Deployment
 
-### Backend
+### Deploy to Vercel
+
+This project is ready to deploy to Vercel with minimal configuration.
+
+**Quick Start:**
+```bash
+# Generate JWT secrets
+node generate-secrets.js
+
+# Deploy backend
+cd server
+vercel --prod
+
+# Deploy frontend
+cd web
+vercel --prod
+```
+
+**Detailed Guides:**
+- 📖 [Quick Deployment Guide](./DEPLOY_QUICKSTART.md) - Fast deployment walkthrough
+- 📋 [Deployment Checklist](./DEPLOYMENT_CHECKLIST.md) - Step-by-step checklist
+- 📚 [Full Deployment Guide](./VERCEL_DEPLOYMENT.md) - Comprehensive documentation
+
+### Local Production Build
+
+#### Backend
 
 ```bash
 cd server
@@ -209,7 +234,7 @@ npm run build
 npm run start:prod
 ```
 
-### Frontend
+#### Frontend
 
 ```bash
 cd web

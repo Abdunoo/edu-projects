@@ -11,15 +11,15 @@ import {
   Put,
   UseGuards,
 } from '@nestjs/common';
-import { JwtAuthGuard } from '@/auth/jwt/jwt.guard';
-import { PermissionsGuard } from '@/auth/guards/permissions.guard';
-import { RequirePermissions } from '@/auth/decorators/permissions.decorator';
-import { Permission } from '@/modules/permissions/permissions.enum';
+import { JwtAuthGuard } from '../../auth/jwt/jwt.guard';
+import { PermissionsGuard } from '../../auth/guards/permissions.guard';
+import { RequirePermissions } from '../../auth/decorators/permissions.decorator';
+import { Permission } from '../../modules/permissions/permissions.enum';
 import type { CreateRoleDto, UpdateRoleDto } from './roles.dto';
 import { RolesService } from './roles.service';
-import { PaginationDto, paginationSchema } from '@/common/types/pagination.dto';
-import { ZodValidationPipe } from '@/common/pipes/zod-validation.pipe';
-import { CsrfGuard } from '@/auth/guards/csrf.guard';
+import { PaginationDto, paginationSchema } from '../../common/types/pagination.dto';
+import { ZodValidationPipe } from '../../common/pipes/zod-validation.pipe';
+import { CsrfGuard } from '../../auth/guards/csrf.guard';
 
 @Controller('roles')
 @UseGuards(JwtAuthGuard, PermissionsGuard)

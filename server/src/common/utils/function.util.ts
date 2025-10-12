@@ -1,5 +1,5 @@
-import { PaginationDto } from '@/common/types/pagination.dto';
-import { PaginationResponse } from '@/common/types/pagination-response.type';
+import { PaginationDto } from '../../common/types/pagination.dto';
+import { PaginationResponse } from '../../common/types/pagination-response.type';
 
 export const exportCsvUtil = async (
   findAllList: (
